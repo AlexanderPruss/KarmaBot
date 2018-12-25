@@ -1,6 +1,4 @@
 import * as Router from 'koa-router';
-import config from "../SlackConfig";
-import {SlackConfig} from "../SlackConfig";
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
