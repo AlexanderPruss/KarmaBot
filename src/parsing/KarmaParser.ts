@@ -13,20 +13,15 @@ export class KarmaRequest {
     }
 }
 
+const INCREMENTER = "+";
+const DECREMENTER = "-";
+
 //Parses a message sent to the bot and translates it into a collection of KaramRequests.
 export class KarmaParser {
-
-    //TODO: How to do config properly in node-typescript? hmm
-    botName = "@KarmaBot".toLowerCase();
-    incrementer = "+";
-    decrementer = "-";
-
+    
     public parseMessage(message: String): KarmaRequest[] {
         let karmaRequests = [];
         message = message.toLowerCase();
-        if (message.search(this.botName) == -1) {
-            return karmaRequests;
-        }
 
         message.split(" ").forEach(
             (word, index) => {
@@ -61,10 +56,10 @@ export class KarmaParser {
 
         //If the word doesn't end in a + or -, skip it.
         let lastCharacter = word.charAt(word.length - 1);
-        if (lastCharacter == this.incrementer) {
-            activeSymbol = this.incrementer;
-        } else if (lastCharacter == this.decrementer) {
-            activeSymbol = this.decrementer;
+        if (lastCharacter == INCREMENTER) {
+            activeSymbol = INCREMENTER;
+        } else if (lastCharacter == DECREMENTER) {
+            activeSymbol = DECREMENTER;
         } else {
             return new KarmaRequest("", 0);
         }
@@ -82,7 +77,7 @@ export class KarmaParser {
         //TODO: Can clean the karmaSubject here if we want, by removing quotation marks and such.
         //TODO: This would let me say "c++"++ to increment the karma of c++.
 
-        if (activeSymbol == this.decrementer) {
+        if (activeSymbol == DECREMENTER) {
             requestedChange *= -1;
         }
 

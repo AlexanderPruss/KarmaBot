@@ -8,7 +8,7 @@ Karmabot is a slack bot that helps you keep track of how awesome things are.
 
 ### That means it doesn't work!
 
-K
+If it has a test class, it probably works. 
 
 ## Usage
 

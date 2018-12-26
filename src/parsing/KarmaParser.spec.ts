@@ -2,18 +2,9 @@ import {KarmaParser, KarmaRequest} from "./KarmaParser";
 import {expect} from 'chai';
 
 let parser = new KarmaParser();
-parser.botName = "@KarmaBot".toLowerCase();
-parser.incrementer = "+";
-parser.decrementer = "-";
-
 describe("KarmaParser", () => {
 
     describe("#parseMessage", () => {
-
-        it("ignores messages with no bot reference", () => {
-            const karmaRequests = parser.parseMessage("foo++ bar-- junk");
-            expect(karmaRequests).to.have.lengthOf(0);
-        });
 
         it("splits a string into words, each of which is parsed.", () => {
             const expectedRequests = [
