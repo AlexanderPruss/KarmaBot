@@ -7,7 +7,6 @@ class App {
 
     constructor() {
         this.koa.use(bodyParser());
-        this.koa.use();
         this.mountRoutes();
     }
 

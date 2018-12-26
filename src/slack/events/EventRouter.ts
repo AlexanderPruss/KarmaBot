@@ -1,4 +1,5 @@
 import * as Router from 'koa-router';
+import slackVerifier from "../RequestVerifier";
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
@@ -7,7 +8,7 @@ import * as Router from 'koa-router';
 class EventRouter {
 
     public addRoutes(router: Router): Router {
-        router.post('/slack/events', async (ctx) => {
+        router.post('/slack/events', slackVerifier.requestVerifier(), async (ctx) => {
                 //If this is a slack challenge, answer with the challenge value.
                 if (ctx.request.body.challenge != null) {
                     ctx.response.body = ctx.request.body.challenge;

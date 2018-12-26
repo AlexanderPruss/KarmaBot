@@ -1,4 +1,4 @@
-import {KarmaRequest, KarmaParser} from "./MessageParser";
+import {KarmaParser, KarmaRequest} from "./KarmaParser";
 import {expect} from 'chai';
 
 let parser = new KarmaParser();
@@ -6,7 +6,8 @@ parser.botName = "@KarmaBot".toLowerCase();
 parser.incrementer = "+";
 parser.decrementer = "-";
 
-describe("Messsage Parser", () => {
+describe("KarmaParser", () => {
+
     describe("#parseMessage", () => {
 
         it("ignores messages with no bot reference", () => {

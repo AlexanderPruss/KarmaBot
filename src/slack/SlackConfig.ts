@@ -19,7 +19,6 @@ export class SlackConfig {
      */
     signingSecret: String;
 
-
     constructor() {
     }
 }
