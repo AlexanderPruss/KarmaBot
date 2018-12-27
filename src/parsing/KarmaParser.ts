@@ -26,9 +26,8 @@ export class KarmaParser {
         message.split(" ").forEach(
             (word, index) => {
 
-                console.log(index + word);
                 let karmaRequest = this.parseWord(word);
-                if (karmaRequest.requestedChange == 0) {
+                if (karmaRequest.requestedChange == 0 || karmaRequest.karmaSubject === "") {
                     return;
                 }
 
@@ -36,7 +35,7 @@ export class KarmaParser {
             }
         );
 
-        return karmaRequests;
+        return this.prettifyKarmaRequests(karmaRequests);
     }
 
     /**
@@ -82,6 +81,38 @@ export class KarmaParser {
         }
 
         return new KarmaRequest(karmaSubject, requestedChange);
+    }
+
+    /**
+     * Check some boundary conditions:
+     * capitalize the first letter of each word,
+     * check the limit of a maximum change of 5,
+     * make sure Pia doesn't lose points.
+     */
+    private prettifyKarmaRequests(requests: KarmaRequest[]): KarmaRequest[] {
+        for (let i = 0; i < requests.length; i++) {
+            let request = requests[i];
+            let karmaSubject = request.karmaSubject;
+
+            //Capitalized karma looks pretty
+            request.karmaSubject = karmaSubject.charAt(0).toUpperCase() + karmaSubject.slice(1);
+
+            //Pia can't lose points.
+            if (request.karmaSubject === "Pia" && request.requestedChange < 0) {
+                request.requestedChange *= -1;
+            }
+
+            //Everyone except Pia can't change their karma by more than 5 at a time.
+            if (request.karmaSubject !== "Pia") {
+                if (request.requestedChange > 5) {
+                    request.requestedChange = 5;
+                }
+                if (request.requestedChange < -5) {
+                    request.requestedChange = -5;
+                }
+            }
+        }
+        return requests;
     }
 
 }
