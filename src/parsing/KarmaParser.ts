@@ -18,7 +18,7 @@ const DECREMENTER = "-";
 
 //Parses a message sent to the bot and translates it into a collection of KaramRequests.
 export class KarmaParser {
-    
+
     public parseMessage(message: String): KarmaRequest[] {
         let karmaRequests = [];
         message = message.toLowerCase();
