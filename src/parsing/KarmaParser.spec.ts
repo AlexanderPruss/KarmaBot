@@ -6,7 +6,7 @@ describe("KarmaParser", () => {
 
     describe("#parseMessage", () => {
 
-        it("splits a string into words, each of which is parsed.", () => {
+        it("splits a string into words, each of which is parsed", () => {
             const expectedRequests = [
                 new KarmaRequest("Foo", 1),
                 new KarmaRequest("Bar", -1),
@@ -95,7 +95,7 @@ describe("KarmaParser", () => {
     });
 
     describe("#prettifyKarmaRequests", () => {
-        it("capitalizes the first letter of each word and makes sure the rest are lowercase.", () => {
+        it("capitalizes the first letter of each word and makes sure the rest are lowercase", () => {
             const expectedRequest = new KarmaRequest("Foo", -3);
 
             const karmaRequests = parser.parseMessage("@Karmabot fOO----");
@@ -105,7 +105,7 @@ describe("KarmaParser", () => {
         });
 
         //TODO: Should I do it per word, or per request? Hmm.
-        it("Prevents changing more than five karma in one single word.", () => {
+        it("Prevents changing more than five karma in one single word", () => {
             const expectedRequests = [
                 new KarmaRequest("Foo", 5),
                 new KarmaRequest("Bar", -5)];
@@ -115,7 +115,7 @@ describe("KarmaParser", () => {
             expect(karmaRequests).to.eql(expectedRequests);
         });
 
-        it("allows Pia to receive more than five karma in one single word.", () => {
+        it("allows Pia to receive more than five karma in one single word", () => {
             const expectedRequest = new KarmaRequest("Pia", 10);
 
             const karmaRequests = parser.parseMessage("@Karmabot pia+++++++++++");
@@ -124,7 +124,7 @@ describe("KarmaParser", () => {
             expect(karmaRequests[0]).to.eql(expectedRequest);
         });
 
-        it("adds points to Pia instead of subtracting them.", () => {
+        it("adds points to Pia instead of subtracting them", () => {
             const expectedRequest = new KarmaRequest("Pia", 10);
 
             const karmaRequests = parser.parseMessage("@Karmabot pia-----------");

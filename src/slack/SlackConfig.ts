@@ -19,8 +19,6 @@ export class SlackConfig {
      */
     signingSecret: String;
 
-    constructor() {
-    }
 }
 
 class SlackConfigReader {
