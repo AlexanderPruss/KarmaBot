@@ -1,5 +1,7 @@
 import * as Router from 'koa-router';
 import slackVerifier from "../RequestVerifier";
+import mongoConnector from "../../storage/MongoConnector";
+import {KarmaRequest} from "../../parsing/KarmaParser";
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
@@ -23,6 +25,20 @@ class EventRouter {
                 };
             }
         );
+
+
+        //TODO: DEBUG
+        router.post('/mongo/update', async (ctx) => {
+            let request = new KarmaRequest(
+                ctx.request.body.subject,
+                ctx.request.body.amount
+            );
+            await mongoConnector.updateKarma(request);
+        });
+        router.get('/mongo/top', async (ctx) => {
+            ctx.response.body = await mongoConnector.readKarma();
+        });
+
         return router;
     }
 }
