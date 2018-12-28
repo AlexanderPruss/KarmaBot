@@ -33,10 +33,10 @@ class EventRouter {
                 ctx.request.body.subject,
                 ctx.request.body.amount
             );
-            await mongoConnector.updateKarma(request);
+            ctx.response.body = await mongoConnector.updateKarma(request);
         });
         router.get('/mongo/top', async (ctx) => {
-            ctx.response.body = await mongoConnector.readKarma();
+            ctx.response.body = await mongoConnector.getLeaderboard();
         });
 
         return router;

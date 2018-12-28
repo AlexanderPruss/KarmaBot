@@ -1,0 +1,6 @@
+import {KarmaRequest} from "../parsing/KarmaParser";
+
+export class KarmaNeighbors {
+    karma : KarmaRequest;
+
+}

@@ -1,0 +1,1 @@
+//TODO: What's a good way to do tests against Mongo? Either we do mongo-unit(or similar) or we run against a real db. hmm.

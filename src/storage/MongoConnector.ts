@@ -22,27 +22,46 @@ class MongoConnector {
         }
     }
 
-    async updateKarma(request: KarmaRequest) {
+    async updateKarma(request: KarmaRequest) : Promise<KarmaRequest> {
         await this.reconnect();
 
-        this.client.db().collection("karma").updateOne(
+        let updateResult = await this.client.db().collection("karma").findOneAndUpdate(
             {name: `${request.karmaSubject}`},
             {
                 $set: {name: `${request.karmaSubject}`},
                 $inc: {karma: +request.requestedChange}
             },
             {upsert: true});
+
+        //if the value is null, then the object was upserted.
+        let updatedKarma = updateResult.value;
+        if(updatedKarma == null) {
+            return request;
+        }
+        return new KarmaRequest(updatedKarma.name, updatedKarma.karma);
     }
 
-    async readKarma() {
+    async getLeaderboard(sort: number = -1) : Promise<KarmaRequest[]> {
         await this.reconnect();
 
-        let topEntries = await this.client.db().collection("karma").find()
-            .sort({"karma": -1})
+        let leaderboard = await this.client.db().collection("karma").find()
+            .sort({"karma": sort})
             .limit(5)
             .toArray();
-        console.log(topEntries);
-        return topEntries;
+
+        return leaderboard.map(
+            (value => new KarmaRequest(value.name, value.karma)));
+    }
+
+    /**
+     * Finds the karma of the given name, as well as its neighbors.
+     */
+    async getClosest(name : string) : Promise<KarmaRequest[]> {
+        await this.reconnect();
+
+
+
+        return null;
     }
 }
 
