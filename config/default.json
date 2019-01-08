@@ -3,7 +3,8 @@
     "appId": "foobar",
     "clientId": "Clever fake entry",
     "clientSecret": "Cleverer fake entry",
-    "signingSecret": "'Cleverer' looks like a fake word, but it isn't"
+    "signingSecret": "'Cleverer' looks like a fake word, but it isn't",
+    "botSecret" : "Beep boop I'm a bot"
   },
   "mongo": {
     "connectionString": "mongodb://localhost:27017/karmabot"

@@ -1,4 +1,4 @@
-import {KarmaParser, KarmaRequest} from "./KarmaParser";
+import {KarmaParser, Karma} from "./KarmaParser";
 import {expect} from 'chai';
 
 let parser = new KarmaParser();
@@ -8,10 +8,10 @@ describe("KarmaParser", () => {
 
         it("splits a string into words, each of which is parsed", () => {
             const expectedRequests = [
-                new KarmaRequest("Foo", 1),
-                new KarmaRequest("Bar", -1),
-                new KarmaRequest("Bigfoo", 2),
-                new KarmaRequest("Bigbar", -2)];
+                new Karma("Foo", 1),
+                new Karma("Bar", -1),
+                new Karma("Bigfoo", 2),
+                new Karma("Bigbar", -2)];
 
             const karmaRequests = parser.parseMessage("@Karmabot foo++ bar-- bigfoo+++ bigbar--- junk");
 
@@ -20,8 +20,8 @@ describe("KarmaParser", () => {
 
         it("allows a single subject to receive multiple requests", () => {
             const expectedRequests = [
-                new KarmaRequest("Foo", 1),
-                new KarmaRequest("Foo", 2)];
+                new Karma("Foo", 1),
+                new Karma("Foo", 2)];
 
             const karmaRequests = parser.parseMessage("@Karmabot foo++ foo+++");
 
@@ -30,8 +30,8 @@ describe("KarmaParser", () => {
 
         it("Capitalizes the first letter of each request and ensures the rest are lowercase", () => {
             const expectedRequests = [
-                new KarmaRequest("Foo", 1),
-                new KarmaRequest("Foo", 2)];
+                new Karma("Foo", 1),
+                new Karma("Foo", 2)];
 
             const karmaRequests = parser.parseMessage("@Karmabot FOO++ fOo+++");
 
@@ -58,7 +58,7 @@ describe("KarmaParser", () => {
         });
 
         it("increments karma by one when it sees two incrementers", () => {
-            const expectedRequest = new KarmaRequest("Foo", 1);
+            const expectedRequest = new Karma("Foo", 1);
 
             const karmaRequests = parser.parseMessage("@Karmabot foo++");
 
@@ -67,7 +67,7 @@ describe("KarmaParser", () => {
         });
 
         it("increments karma by n-1 when it sees n incrementers", () => {
-            const expectedRequest = new KarmaRequest("Foo", 3);
+            const expectedRequest = new Karma("Foo", 3);
 
             const karmaRequests = parser.parseMessage("@Karmabot foo++++");
 
@@ -76,7 +76,7 @@ describe("KarmaParser", () => {
         });
 
         it("decrements karma by one when it sees two decrementers", () => {
-            const expectedRequest = new KarmaRequest("Foo", -1);
+            const expectedRequest = new Karma("Foo", -1);
 
             const karmaRequests = parser.parseMessage("@Karmabot foo--");
 
@@ -85,7 +85,7 @@ describe("KarmaParser", () => {
         });
 
         it("decrements karma by n-1 when it sees n decrementers", () => {
-            const expectedRequest = new KarmaRequest("Foo", -3);
+            const expectedRequest = new Karma("Foo", -3);
 
             const karmaRequests = parser.parseMessage("@Karmabot foo----");
 
@@ -96,7 +96,7 @@ describe("KarmaParser", () => {
 
     describe("#prettifyKarmaRequests", () => {
         it("capitalizes the first letter of each word and makes sure the rest are lowercase", () => {
-            const expectedRequest = new KarmaRequest("Foo", -3);
+            const expectedRequest = new Karma("Foo", -3);
 
             const karmaRequests = parser.parseMessage("@Karmabot fOO----");
 
@@ -107,8 +107,8 @@ describe("KarmaParser", () => {
         //TODO: Should I do it per word, or per request? Hmm.
         it("Prevents changing more than five karma in one single word", () => {
             const expectedRequests = [
-                new KarmaRequest("Foo", 5),
-                new KarmaRequest("Bar", -5)];
+                new Karma("Foo", 5),
+                new Karma("Bar", -5)];
 
             const karmaRequests = parser.parseMessage("@Karmabot FOO++++++++++ bAr-------------");
 
@@ -116,7 +116,7 @@ describe("KarmaParser", () => {
         });
 
         it("allows Pia to receive more than five karma in one single word", () => {
-            const expectedRequest = new KarmaRequest("Pia", 10);
+            const expectedRequest = new Karma("Pia", 10);
 
             const karmaRequests = parser.parseMessage("@Karmabot pia+++++++++++");
 
@@ -125,7 +125,7 @@ describe("KarmaParser", () => {
         });
 
         it("adds points to Pia instead of subtracting them", () => {
-            const expectedRequest = new KarmaRequest("Pia", 10);
+            const expectedRequest = new Karma("Pia", 10);
 
             const karmaRequests = parser.parseMessage("@Karmabot pia-----------");
 

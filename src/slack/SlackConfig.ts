@@ -19,6 +19,11 @@ export class SlackConfig {
      */
     signingSecret: String;
 
+    /**
+     * The authentication for the bot.
+     */
+    botSecret: String;
+
 }
 
 class SlackConfigReader {

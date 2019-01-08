@@ -1,7 +1,8 @@
 import * as Router from 'koa-router';
 import slackVerifier from "../RequestVerifier";
 import mongoConnector from "../../storage/MongoConnector";
-import {KarmaRequest} from "../../parsing/KarmaParser";
+import {Karma} from "../../parsing/KarmaParser";
+import eventService, {IncomingSlackEvent} from "./EventService";
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
@@ -17,19 +18,22 @@ class EventRouter {
                     return;
                 }
 
-                //Else, let the proper event service do its work.
-                let foo = ctx.query.foo;
-                console.log(ctx.request.body);
-                ctx.response.body = {
-                    message: `received foo: ${foo}`
-                };
+                //Else, respond immediately with a 200 (as requested by the Slack Event API.)
+                //Do the work of processing the event in a separate thread.
+                ctx.response.status=200;
+                let slackEvent : IncomingSlackEvent = ctx.request.body;
+                if(slackEvent.event != null && slackEvent.event.text != null && slackEvent.event.channel != null) { //TODO: Validation should happen elsewhere
+                    return;
+                }
+
+                eventService.handleEvent(slackEvent.event);
             }
         );
 
 
         //TODO: DEBUG
         router.post('/mongo/update', async (ctx) => {
-            let request = new KarmaRequest(
+            let request = new Karma(
                 ctx.request.body.subject,
                 ctx.request.body.amount
             );
@@ -37,6 +41,9 @@ class EventRouter {
         });
         router.get('/mongo/top', async (ctx) => {
             ctx.response.body = await mongoConnector.getLeaderboard();
+        });
+        router.post('/mongo/neighbors', async (ctx) => {
+            ctx.response.body = await mongoConnector.getKarmaNeighbors(ctx.request.body.subject);
         });
 
         return router;
