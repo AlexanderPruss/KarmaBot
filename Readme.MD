@@ -4,11 +4,10 @@ Karmabot is a slack bot that helps you keep track of how awesome things are.
 
 # Still a work in progress! 
 
-## That means core functionality isn't done yet!
+Karma increasing and decreasing works, but leaderboards are not yet implemented.
 
-### That means it doesn't work!
-
-If it has a test class, it probably works. 
+The biggest features coming are a distribution as a Slack app (so you don't have to run everything yourself) 
+and Terraform/Docker/K8s files in the `infrastructure` folder (so it's easy to run yourself if you want). 
 
 ## Usage
 
@@ -16,13 +15,13 @@ Karmabot's design currently plans for two different interactions. You can increm
 karma of various things, and you can ask Karmabot for a leaderboard to see what is loved the most.
 
 To get Karmabot's attention, either send it a direct message or post a message with `@Karmabot` 
-in a public channel. Karmabot will then parse your message as follows:
+in a channel that Karmabot has been invited to. Karmabot will then parse your message as follows:
 
 - Karmabot will increment or decrement the karma of strings that are proceeded with `++` or `--`. You can 
 increment or decrement up to five points at a time.
   - Ex: `coffee++` -> Coffee now has one more point.
   - Ex: `monday----` -> Monday now has three less points.
-- Messages containing the phrase `leaderboard` will have Karmabot reply with the current top 5 karma holders.
+- Messages containing the phrase `!leaderboard` will have Karmabot reply with the current top 5 karma holders.
 
 Feel free to suggest more features.
 

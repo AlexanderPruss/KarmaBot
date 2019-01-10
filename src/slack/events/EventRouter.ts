@@ -22,29 +22,14 @@ class EventRouter {
                 //Do the work of processing the event in a separate thread.
                 ctx.response.status=200;
                 let slackEvent : IncomingSlackEvent = ctx.request.body;
-                if(slackEvent.event != null && slackEvent.event.text != null && slackEvent.event.channel != null) { //TODO: Validation should happen elsewhere
+                if(slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) { //TODO: Validation should happen elsewhere
+                    console.log("Didn't receive a valid event.");
                     return;
                 }
 
                 eventService.handleEvent(slackEvent.event);
             }
         );
-
-
-        //TODO: DEBUG
-        router.post('/mongo/update', async (ctx) => {
-            let request = new Karma(
-                ctx.request.body.subject,
-                ctx.request.body.amount
-            );
-            ctx.response.body = await mongoConnector.updateKarma(request);
-        });
-        router.get('/mongo/top', async (ctx) => {
-            ctx.response.body = await mongoConnector.getLeaderboard();
-        });
-        router.post('/mongo/neighbors', async (ctx) => {
-            ctx.response.body = await mongoConnector.getKarmaNeighbors(ctx.request.body.subject);
-        });
 
         return router;
     }

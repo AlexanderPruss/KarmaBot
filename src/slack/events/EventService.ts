@@ -13,10 +13,11 @@ class EventService {
     config: SlackConfig = slackConfig;
 
     public async handleEvent(event: EventData) {
+        console.log("Handling event.");
         let karmaRequests = karmaParser.parseMessage(event.text);
         //TODO: let leaderboard = leaderboardParser.checkForLeaderboards();
 
-        let updatedKarmaPromise = karmaRequests.map(mongoConnector.updateKarma);
+        let updatedKarmaPromise = karmaRequests.map(karma => {return mongoConnector.updateKarma(karma)});
         let updatedKarmas = await Promise.all(updatedKarmaPromise);
         console.log("Updated karma.");
 
@@ -33,10 +34,10 @@ class EventService {
         let message = `${karmaNeighbors.karma.subject} now has ${karmaNeighbors.karma.amount} karma.`;
 
         if(karmaNeighbors.nextKarma != null) {
-            message += `${karmaNeighbors.nextKarma.subject} has the next highest karma, with ${karmaNeighbors.nextKarma.amount} karma.`
+            message += ` ${karmaNeighbors.nextKarma.subject} has the next highest karma, with ${karmaNeighbors.nextKarma.amount} karma.`
         }
         if(karmaNeighbors.previousKarma != null) {
-            message += `${karmaNeighbors.previousKarma.subject} has the next lowest karma, with ${karmaNeighbors.previousKarma.amount} karma.`
+            message += ` ${karmaNeighbors.previousKarma.subject} has the next lowest karma, with ${karmaNeighbors.previousKarma.amount} karma.`
         }
 
         return message;
