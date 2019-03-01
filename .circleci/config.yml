@@ -6,6 +6,7 @@ jobs:
     steps:
       - checkout
       - run: npm --v
+      - run: node -v
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "package.json" }}
       - run: npm install
