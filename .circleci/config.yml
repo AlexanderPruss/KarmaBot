@@ -5,6 +5,7 @@ jobs:
       - image: node:8.12.0
     steps:
       - checkout
+      - run: echo $NODE_ENV
       - run: npm --v
       - run: node -v
       - restore_cache:
