@@ -19,12 +19,12 @@ jobs:
       - checkout
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "package.json" }}
-      - run: npm install
+      - run: yarn install
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - "./node_modules"
-      - run: npm run build
+      - run: yarn build
       - run: npm run test
   deploy:
     docker:
