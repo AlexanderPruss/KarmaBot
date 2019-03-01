@@ -1,9 +1,7 @@
 import karmaParser, {Karma} from "../../parsing/KarmaParser";
-import leaderboardParser from "../../parsing/LeaderboardParser";
 import mongoConnector from "../../storage/MongoConnector";
-import axios, { AxiosRequestConfig, AxiosPromise } from 'axios';
-import {SlackConfig} from "../SlackConfig";
-import slackConfig from "../SlackConfig";
+import axios from 'axios';
+import slackConfig, {SlackConfig} from "../SlackConfig";
 
 /**
  * The event service is the main orchestrator of the app.
@@ -17,7 +15,9 @@ class EventService {
         let karmaRequests = karmaParser.parseMessage(event.text);
         //TODO: let leaderboard = leaderboardParser.checkForLeaderboards();
 
-        let updatedKarmaPromise = karmaRequests.map(karma => {return mongoConnector.updateKarma(karma)});
+        let updatedKarmaPromise = karmaRequests.map(karma => {
+            return mongoConnector.updateKarma(karma)
+        });
         let updatedKarmas = await Promise.all(updatedKarmaPromise);
         console.log("Updated karma.");
 
@@ -28,15 +28,15 @@ class EventService {
         this.respondWithMessage(responseMessages.join("\n-----\n"), event.channel);
     }
 
-    public async toResponseMessage(updatedKarma : Karma) : Promise<String> {
+    public async toResponseMessage(updatedKarma: Karma): Promise<String> {
         let karmaNeighbors = await mongoConnector.getKarmaNeighbors(updatedKarma.subject.toString());
 
         let message = `${karmaNeighbors.karma.subject} now has ${karmaNeighbors.karma.amount} karma.`;
 
-        if(karmaNeighbors.nextKarma != null) {
+        if (karmaNeighbors.nextKarma != null) {
             message += ` ${karmaNeighbors.nextKarma.subject} has the next highest karma, with ${karmaNeighbors.nextKarma.amount} karma.`
         }
-        if(karmaNeighbors.previousKarma != null) {
+        if (karmaNeighbors.previousKarma != null) {
             message += ` ${karmaNeighbors.previousKarma.subject} has the next lowest karma, with ${karmaNeighbors.previousKarma.amount} karma.`
         }
 
@@ -52,13 +52,13 @@ class EventService {
             },
             {
                 headers: {
-                    Authorization : slackConfig.botSecret
+                    Authorization: slackConfig.botSecret
                 }
             })
             .then(function (response) {
                 console.log("Response sent successfully.");
             }).catch(function (error) {
-                console.error(`Error from Slack: ${error}.`)
+            console.error(`Error from Slack: ${error}.`)
         });
     }
 

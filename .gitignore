@@ -3,3 +3,4 @@ node_modules/
 config/dev.json
 config/production.json
 dist/
+.DS_Store

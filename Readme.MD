@@ -42,7 +42,7 @@ right value of `NODE_ENV` in your terminal/vm/container.
 
 * Node
 * Koa 
-* (WIP) Mongo - will add additional DB connectors for hipper databases later.
+* Mongo - will add additional DB connectors for hipper databases later.
 
 ## Infrastructure
 

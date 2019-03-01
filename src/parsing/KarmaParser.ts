@@ -21,8 +21,7 @@ export class KarmaParser {
         let karmaRequests = [];
         message = message.toLowerCase();
 
-        message.split(" ").forEach(
-            (word) => {
+        message.split(" ").forEach((word) => {
 
                 let karmaRequest = this.parseWord(word);
                 if (karmaRequest.amount == 0 || karmaRequest.subject === "") {
@@ -43,7 +42,7 @@ export class KarmaParser {
      *
      * Ex:
      *  C++ -> increment C by one
-     *  Dog+++ -> increment Dog by one
+     *  Dog+++ -> increment Dog by two
      *  Disaster--- -> decrement Disaster by two.
      *
      *  Also fun - '' to identify a special thing? hmmmmm
