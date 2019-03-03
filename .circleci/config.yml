@@ -37,13 +37,21 @@ jobs:
     steps:
       - checkout
       - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "package.json" }}
+      - run: npm install
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - "./node_modules"
+      - run: npm run build
+      - run: rm -r node_modules
+      - restore_cache:
           key: deployment-{{ .Branch }}-{{ checksum "package.json" }}
       - run: npm install --production
       - save_cache:
           key: deployment-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - "./node_modules"
-      - run: npm run build
       - run: node config/CreateCircleConfig.js
       - run: mkdir karmabotdeployment
       - run: mkdir deploymentworkspace
