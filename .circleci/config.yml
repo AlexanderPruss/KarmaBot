@@ -6,9 +6,9 @@ workflows:
       - deploy:
           requires:
             - build
-          filters:
-            branches:
-              only: master
+          #filters:
+          #  branches:
+          #    only: master
 
 version: 2
 jobs:
@@ -26,7 +26,8 @@ jobs:
             - "./node_modules"
       - run: npm run build
       - run: npm run test
-      - run: echo "Testing deployment configuration."
+      - run: rm -r node_modules
+      - run: npm install --production
       - run: node config/CreateCircleConfig.js
       - run: mkdir karmabotdeployment
       - run: mv node_modules karmabotdeployment
@@ -34,24 +35,17 @@ jobs:
       - run: mv config karmabotdeployment
       - run: mv karmabotdeployment/config/circleci.json karmabotdeployment/config/production.json
       - run: zip -r karmabotdeployment.zip karmabotdeployment
-      - run: ls
-      - run: sudo pip install awscli
-      - run: aws s3 cp karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment.zip
+      - save_cache:
+          key: deployment-{{ checksum "karmabotdeployment.zip" }}
+          paths:
+            - "karmabotdeployment.zip"
 
   deploy:
     docker:
-      - image: circleci/node:8.12.0
+      - image: circleci/python:2.7-jessie
     steps:
-      - checkout
-      - run: ls
       - restore_cache:
           key: deployment-{{ checksum "package.json" }}
-      - run: npm install --production
-      - save_cache:
-          key: deployment-{{ checksum "package.json" }}
-          paths:
-            - "./node_modules"
-      - run: npm run build
-      - run: node config/CreateCircleConfig.js
-      - run: echo "Package in zip"
-      - run: echo "push to S3"
+      - run: ls
+      - run: sudo pip install awscli
+      - run: aws s3 cp karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment.zip
