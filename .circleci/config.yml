@@ -30,22 +30,25 @@ jobs:
       - run: npm install --production
       - run: node config/CreateCircleConfig.js
       - run: mkdir karmabotdeployment
+      - run: mkdir deploymentworkspace
       - run: mv node_modules karmabotdeployment
       - run: mv dist karmabotdeployment
       - run: mv config karmabotdeployment
       - run: mv karmabotdeployment/config/circleci.json karmabotdeployment/config/production.json
       - run: zip -r karmabotdeployment.zip karmabotdeployment
-      - save_cache:
-          key: deployment-{{ checksum "karmabotdeployment.zip" }}
+      - run: mv karmabotdeployment.zip deploymentworkspace/karmabotdeployment.zip
+      - persist_to_workspace:
+          root: deploymentworkspace
           paths:
-            - "karmabotdeployment.zip"
+            - karmabotdeployment.zip
 
   deploy:
     docker:
       - image: circleci/python:2.7-jessie
     steps:
-      - restore_cache:
-          key: deployment-{{ checksum "package.json" }}
+      - attach_workspace:
+          at: deploymentworkspace
       - run: ls
+      - run: ls deploymentworkspace
       - run: sudo pip install awscli
-      - run: aws s3 cp karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment.zip
+      - run: aws s3 cp deploymentworkspace/karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment.zip
