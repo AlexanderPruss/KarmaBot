@@ -35,6 +35,8 @@ jobs:
       - run: mv karmabotdeployment/config/circleci.json karmabotdeployment/config/production.json
       - run: zip -r karmabotdeployment.zip karmabotdeployment
       - run: ls
+      - run: sudo pip install awscli
+      - run: aws s3 cp karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment.zip
 
   deploy:
     docker:
