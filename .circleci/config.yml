@@ -56,12 +56,12 @@ jobs:
       - run: mkdir karmabotdeployment
       - run: mkdir deploymentworkspace
       - run: mv node_modules karmabotdeployment
-      - run: mv dist karmabotdeployment
+      - run: mv dist/* karmabotdeployment/
       - run: mv config karmabotdeployment
       - run: mv karmabotdeployment/config/circleci.json karmabotdeployment/config/production.json
       - run:
           name: "Zip the deployment package without the surrounding folder."
-          command: zip -r ../karmabotdeployment.zip *
+          command: zip -r ../karmabotdeployment.zip ./*
           working_directory: karmabotdeployment
       - run: mv karmabotdeployment.zip deploymentworkspace/karmabotdeployment.zip
       - persist_to_workspace:
