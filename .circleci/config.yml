@@ -10,12 +10,11 @@ workflows:
             branches:
               only: master
 
-
 version: 2
 jobs:
   build:
     docker:
-      - image: node:8.12.0
+      - image: circleci/node:8.12.0
     steps:
       - checkout
       - restore_cache:
@@ -27,6 +26,15 @@ jobs:
             - "./node_modules"
       - run: npm run build
       - run: npm run test
+      - run: echo "Testing deployment configuration."
+      - run: node config/CreateCircleConfig.js
+      - run: mkdir karmabotdeployment
+      - run: mv node_modules karmabotdeployment
+      - run: mv dist karmabotdeployment
+      - run: mv config karmabotdeployment
+      - run: mv karmabotdeployment/config/circleci.json karmabotdeployment/config/production.json
+      - run: zip -r karmabotdeployment.zip karmabotdeployment
+      - run: ls
 
   deploy:
     docker:
@@ -42,6 +50,6 @@ jobs:
           paths:
             - "./node_modules"
       - run: npm run build
-      - run: echo "Create config"
+      - run: node config/CreateCircleConfig.js
       - run: echo "Package in zip"
       - run: echo "push to S3"
