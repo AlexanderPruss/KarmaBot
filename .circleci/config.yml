@@ -9,7 +9,7 @@ workflows:
               only: master
       - deploy:
           requires:
-            - build
+            - package
           filters:
             branches:
               only: master
