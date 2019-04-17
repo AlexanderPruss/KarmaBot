@@ -61,14 +61,14 @@ export class KarmaService {
 
         let nextHighest = await db.collection("karma").aggregate([
             {
-                $match: {karma: {$gt: targetKarma.value}}
+                $match: {value: {$gt: targetKarma.value}}
             },
             {
                 $project: {
                     name: 1,
-                    karma: 1,
+                    value: 1,
                     difference: {
-                        $subtract: [targetKarma.value, "$karma"]
+                        $subtract: [targetKarma.value, "$value"]
                     }
                 }
             },
@@ -81,14 +81,14 @@ export class KarmaService {
         ).toArray();
         let nextLowest = await db.collection("karma").aggregate([
             {
-                $match: {karma: {$lt: targetKarma.value}}
+                $match: {value: {$lt: targetKarma.value}}
             },
             {
                 $project: {
                     name: 1,
-                    karma: 1,
+                    value: 1,
                     difference: {
-                        $subtract: [targetKarma.value, "$karma"]
+                        $subtract: [targetKarma.value, "$value"]
                     }
                 }
             },

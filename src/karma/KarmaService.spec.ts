@@ -85,7 +85,7 @@ describe('KarmaService', function () {
                 nextKarma: {name: "dogs", value: 1000}
             };
 
-            const karmaNeighbors = await karmaService.getKarmaNeighbors("parrots");
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("cats");
 
             expect(karmaNeighbors).to.eql(expectedNeighbors);
         });
