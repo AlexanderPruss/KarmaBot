@@ -1,5 +1,5 @@
 import * as Router from 'koa-router';
-import slackVerifier from "../RequestVerifier";
+import slackVerifier from "./RequestVerifier";
 import eventService, {IncomingSlackEvent} from "./EventService";
 
 /**

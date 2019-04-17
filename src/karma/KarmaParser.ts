@@ -1,4 +1,4 @@
-import {Karma} from "../karma/Karma";
+import {Karma} from "./Karma";
 
 const INCREMENTER = "+";
 const DECREMENTER = "-";
@@ -13,7 +13,7 @@ export class KarmaParser {
         message.split(" ").forEach((word) => {
 
                 let karmaRequest = this.parseWord(word);
-                if (karmaRequest.amount == 0 || karmaRequest.subject === "") {
+                if (karmaRequest.value == 0 || karmaRequest.name === "") {
                     return;
                 }
 
@@ -78,23 +78,23 @@ export class KarmaParser {
     private prettifyKarmaRequests(requests: Karma[]): Karma[] {
         for (let i = 0; i < requests.length; i++) {
             let request = requests[i];
-            let karmaSubject = request.subject;
+            let karmaSubject = request.name;
 
             //Capitalized karma looks pretty
-            request.subject = karmaSubject.charAt(0).toUpperCase() + karmaSubject.slice(1);
+            request.name = karmaSubject.charAt(0).toUpperCase() + karmaSubject.slice(1);
 
             //Pia can't lose points.
-            if (request.subject === "Pia" && request.amount < 0) {
-                request.amount *= -1;
+            if (request.name === "Pia" && request.value < 0) {
+                request.value *= -1;
             }
 
             //Everyone except Pia can't change their karma by more than 5 at a time.
-            if (request.subject !== "Pia") {
-                if (request.amount > 5) {
-                    request.amount = 5;
+            if (request.name !== "Pia") {
+                if (request.value > 5) {
+                    request.value = 5;
                 }
-                if (request.amount < -5) {
-                    request.amount = -5;
+                if (request.value < -5) {
+                    request.value = -5;
                 }
             }
         }

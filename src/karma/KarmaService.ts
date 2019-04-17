@@ -2,33 +2,34 @@ import {Karma} from "./Karma";
 import {KarmaNeighbors} from "./KarmaNeighbors";
 import mongoConnector, {MongoConnector} from "../storage/MongoConnector";
 
+/**
+ * KarmaService is in charge of database operations for Karma.
+ */
 export class KarmaService {
+
     private mongoConnector: MongoConnector = mongoConnector;
 
-    async updateKarma(request: Karma): Promise<Karma> {
+    async updateKarma(karma: Karma): Promise<Karma> {
         const db = await this.mongoConnector.reconnectAndGetDb();
 
         let updateResult = await db.collection("karma").findOneAndUpdate(
-            {name: `${request.subject}`},
+            {name: `${karma.name}`},
             {
-                $set: {name: `${request.subject}`},
-                $inc: {karma: +request.amount}
+                $set: {name: `${karma.name}`},
+                $inc: {value: +karma.value}
             },
             {upsert: true});
 
         //if the value is null, then the object was upserted.
         let updatedKarma = updateResult.value;
-        if (updatedKarma == null) {
-            return request;
-        }
-        return new Karma(updatedKarma.name, updatedKarma.karma);
+        return updatedKarma == null ? karma : updatedKarma;
     }
 
     async getLeaderboard(sort: number = -1): Promise<Karma[]> {
         const db = await this.mongoConnector.reconnectAndGetDb();
 
         let leaderboard = await db.collection("karma").find()
-            .sort({"karma": sort})
+            .sort({value: sort})
             .limit(5)
             .toArray();
 
@@ -48,18 +49,17 @@ export class KarmaService {
             return new KarmaNeighbors(null, null, null);
         }
 
-        let targetKarma = new Karma(target.name, target.karma);
-
+        let targetKarma = new Karma(target.name, target.value);
         let nextHighest = await db.collection("karma").aggregate([
             {
-                $match: {karma: {$gt: targetKarma.amount}}
+                $match: {karma: {$gt: targetKarma.value}}
             },
             {
                 $project: {
                     name: 1,
                     karma: 1,
                     difference: {
-                        $subtract: [targetKarma.amount, "$karma"]
+                        $subtract: [targetKarma.value, "$karma"]
                     }
                 }
             },
@@ -72,14 +72,14 @@ export class KarmaService {
         ).toArray();
         let nextLowest = await db.collection("karma").aggregate([
             {
-                $match: {karma: {$lt: targetKarma.amount}}
+                $match: {karma: {$lt: targetKarma.value}}
             },
             {
                 $project: {
                     name: 1,
                     karma: 1,
                     difference: {
-                        $subtract: [targetKarma.amount, "$karma"]
+                        $subtract: [targetKarma.value, "$karma"]
                     }
                 }
             },

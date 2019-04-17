@@ -1,8 +1,8 @@
-import karmaParser from "../../parsing/KarmaParser";
-import karmaService from "../../karma/KarmaService";
+import karmaParser from "../karma/KarmaParser";
+import karmaService from "../karma/KarmaService";
 import axios from 'axios';
-import slackConfig, {SlackConfig} from "../SlackConfig";
-import {Karma} from "../../karma/Karma";
+import slackConfig, {SlackConfig} from "./SlackConfig";
+import {Karma} from "../karma/Karma";
 
 /**
  * The event service is the main orchestrator of the app.
@@ -30,15 +30,15 @@ class EventService {
     }
 
     public async toResponseMessage(updatedKarma: Karma): Promise<String> {
-        let karmaNeighbors = await karmaService.getKarmaNeighbors(updatedKarma.subject.toString());
+        let karmaNeighbors = await karmaService.getKarmaNeighbors(updatedKarma.name.toString());
 
-        let message = `${karmaNeighbors.karma.subject} now has ${karmaNeighbors.karma.amount} karma.`;
+        let message = `${karmaNeighbors.karma.name} now has ${karmaNeighbors.karma.value} karma.`;
 
         if (karmaNeighbors.nextKarma != null) {
-            message += ` ${karmaNeighbors.nextKarma.subject} has the next highest karma, with ${karmaNeighbors.nextKarma.amount} karma.`
+            message += ` ${karmaNeighbors.nextKarma.name} has the next highest karma, with ${karmaNeighbors.nextKarma.value} karma.`
         }
         if (karmaNeighbors.previousKarma != null) {
-            message += ` ${karmaNeighbors.previousKarma.subject} has the next lowest karma, with ${karmaNeighbors.previousKarma.amount} karma.`
+            message += ` ${karmaNeighbors.previousKarma.name} has the next lowest karma, with ${karmaNeighbors.previousKarma.value} karma.`
         }
 
         return message;

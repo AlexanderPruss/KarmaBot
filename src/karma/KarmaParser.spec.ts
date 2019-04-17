@@ -1,6 +1,6 @@
 import {KarmaParser} from "./KarmaParser";
 import {expect} from 'chai';
-import {Karma} from "../karma/Karma";
+import {Karma} from "./Karma";
 
 let parser = new KarmaParser();
 describe("KarmaParser", () => {

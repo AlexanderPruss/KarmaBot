@@ -1,9 +1,9 @@
 export class Karma {
-    subject: string;
-    amount: number;
+    name: string;
+    value: number;
 
     constructor(karmaSubject: string, requestedChange: number) {
-        this.subject = karmaSubject;
-        this.amount = requestedChange;
+        this.name = karmaSubject;
+        this.value = requestedChange;
     }
 }
