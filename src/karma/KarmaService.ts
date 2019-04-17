@@ -1,55 +1,64 @@
 import {Karma} from "./Karma";
 import {KarmaNeighbors} from "./KarmaNeighbors";
 import mongoConnector, {MongoConnector} from "../storage/MongoConnector";
+import logger from "../logging/Logger";
 
 /**
  * KarmaService is in charge of database operations for Karma.
  */
 export class KarmaService {
 
-    private mongoConnector: MongoConnector = mongoConnector;
+    mongoConnector: MongoConnector = mongoConnector;
+
+    /**
+     * Returns the karma with the given name, or null if no such karma can be found.
+     * @param name
+     */
+    async findKarma(name: string) : Promise<Karma> {
+        logger.info(`Finding karma with name ${name}.`);
+
+        const db = await this.mongoConnector.reconnectAndGetDb();
+        const foundKarma : Karma[] = await db.collection("karma").find({name: {$eq: name}}).toArray();
+
+        if (foundKarma.length == 0) {
+            logger.warn(`Couldn't find karma with name ${name}.`);
+            return null;
+        }
+
+        //This should be impossible. Famous last words
+        if (foundKarma.length > 1) {
+            logger.error(`Database consistency error - multiple karmas with name ${name} found.`);
+            throw new Error(`Database consistency error - multiple karmas with name ${name} found.`);
+        }
+
+        return {name: foundKarma[0].name, value: foundKarma[0].value};
+    }
 
     async updateKarma(karma: Karma): Promise<Karma> {
         const db = await this.mongoConnector.reconnectAndGetDb();
 
         let updateResult = await db.collection("karma").findOneAndUpdate(
-            {name: `${karma.name}`},
+            {name: karma.name},
             {
-                $set: {name: `${karma.name}`},
-                $inc: {value: +karma.value}
+                $set: {name: karma.name},
+                $inc: {value: karma.value}
             },
             {upsert: true});
 
-        //if the value is null, then the object was upserted.
-        let updatedKarma = updateResult.value;
-        return updatedKarma == null ? karma : updatedKarma;
-    }
-
-    async getLeaderboard(sort: number = -1): Promise<Karma[]> {
-        const db = await this.mongoConnector.reconnectAndGetDb();
-
-        let leaderboard = await db.collection("karma").find()
-            .sort({value: sort})
-            .limit(5)
-            .toArray();
-
-        return leaderboard.map(
-            (value => new Karma(value.name, value.karma)));
+        return this.findKarma(karma.name);
     }
 
     /**
      * Finds the karma of the given name, as well as its neighbors.
      */
     async getKarmaNeighbors(name: string): Promise<KarmaNeighbors> {
+        logger.info(`Finding karma neighbors for ${name}`);
         const db = await this.mongoConnector.reconnectAndGetDb();
-        let target = await db.collection("karma").findOne(
-            {name: name}
-        );
-        if (target == null) {
+        let targetKarma = await this.findKarma(name);
+        if (targetKarma == null) {
             return new KarmaNeighbors(null, null, null);
         }
 
-        let targetKarma = new Karma(target.name, target.value);
         let nextHighest = await db.collection("karma").aggregate([
             {
                 $match: {karma: {$gt: targetKarma.value}}
@@ -91,10 +100,10 @@ export class KarmaService {
             }]
         ).toArray();
 
-        let nextHighestKarma = nextHighest.length == 0 ?
-            null : new Karma(nextHighest[0].name, nextHighest[0].karma);
-        let nextLowestKarma = nextLowest.length == 0 ?
-            null : new Karma(nextLowest[0].name, nextLowest[0].karma);
+        let nextHighestKarma : Karma = nextHighest.length == 0 ?
+            null : {name: nextHighest[0].name, value: nextHighest[0].value};
+        let nextLowestKarma : Karma = nextLowest.length == 0 ?
+            null : {name: nextLowest[0].name, value: nextLowest[0].value};
 
         return new KarmaNeighbors(targetKarma, nextLowestKarma, nextHighestKarma);
     }

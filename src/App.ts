@@ -1,5 +1,4 @@
 import * as Koa from 'koa';
-import appRouter from "./router/AppRouter";
 import * as bodyParser from "koa-bodyparser";
 
 class App {
@@ -7,14 +6,6 @@ class App {
 
     constructor() {
         this.koa.use(bodyParser());
-        this.mountRoutes();
-    }
-
-    private mountRoutes(): void {
-        let router = appRouter.setupRoutes();
-        this.koa
-            .use(router.routes())
-            .use(router.allowedMethods());
     }
 }
 

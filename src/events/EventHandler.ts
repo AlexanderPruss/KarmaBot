@@ -6,7 +6,7 @@ import eventService, {IncomingSlackEvent} from "./EventService";
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
  * but also with Slack Event API challenges - see https://api.slack.com/events/url_verification.
  */
-class EventRouter {
+class EventHandler {
 
     public addRoutes(router: Router): Router {
         router.post('/slack/events', slackVerifier.requestVerifier(), async (ctx) => {
@@ -33,4 +33,4 @@ class EventRouter {
     }
 }
 
-export default new EventRouter()
+export default new EventHandler()

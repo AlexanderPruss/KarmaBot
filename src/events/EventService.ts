@@ -5,7 +5,7 @@ import slackConfig, {SlackConfig} from "./SlackConfig";
 import {Karma} from "../karma/Karma";
 
 /**
- * The event service is the main orchestrator of the app.
+ * The event service is the orchestrator of the app. It sends event information onto each handler.
  */
 class EventService {
 
