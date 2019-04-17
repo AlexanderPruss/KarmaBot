@@ -1,15 +1,4 @@
-/**
- * Just a glorified key-value holder.
- */
-export class Karma {
-    subject: String;
-    amount: number;
-
-    constructor(karmaSubject: String, requestedChange: number) {
-        this.subject = karmaSubject;
-        this.amount = requestedChange;
-    }
-}
+import {Karma} from "../karma/Karma";
 
 const INCREMENTER = "+";
 const DECREMENTER = "-";

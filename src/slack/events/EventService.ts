@@ -1,7 +1,8 @@
-import karmaParser, {Karma} from "../../parsing/KarmaParser";
-import mongoConnector from "../../storage/MongoConnector";
+import karmaParser from "../../parsing/KarmaParser";
+import karmaService from "../../karma/KarmaService";
 import axios from 'axios';
 import slackConfig, {SlackConfig} from "../SlackConfig";
+import {Karma} from "../../karma/Karma";
 
 /**
  * The event service is the main orchestrator of the app.
@@ -16,7 +17,7 @@ class EventService {
         //TODO: let leaderboard = leaderboardParser.checkForLeaderboards();
 
         let updatedKarmaPromise = karmaRequests.map(karma => {
-            return mongoConnector.updateKarma(karma)
+            return karmaService.updateKarma(karma)
         });
         let updatedKarmas = await Promise.all(updatedKarmaPromise);
         console.log("Updated karma.");
@@ -29,7 +30,7 @@ class EventService {
     }
 
     public async toResponseMessage(updatedKarma: Karma): Promise<String> {
-        let karmaNeighbors = await mongoConnector.getKarmaNeighbors(updatedKarma.subject.toString());
+        let karmaNeighbors = await karmaService.getKarmaNeighbors(updatedKarma.subject.toString());
 
         let message = `${karmaNeighbors.karma.subject} now has ${karmaNeighbors.karma.amount} karma.`;
 

@@ -1,4 +1,4 @@
-import {Karma} from "../parsing/KarmaParser";
+import {Karma} from "./Karma";
 
 export class KarmaNeighbors {
     karma : Karma;
