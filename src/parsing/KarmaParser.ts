@@ -6,7 +6,7 @@ const DECREMENTER = "-";
 //Parses a message sent to the bot and translates it into a collection of Karma requests.
 export class KarmaParser {
 
-    public parseMessage(message: String): Karma[] {
+    public parseMessage(message: string): Karma[] {
         let karmaRequests = [];
         message = message.toLowerCase();
 
@@ -37,7 +37,7 @@ export class KarmaParser {
      *  Also fun - '' to identify a special thing? hmmmmm
      */
     private parseWord(word: string): Karma {
-        let activeSymbol: String = null;
+        let activeSymbol: string = null;
 
         //If the word doesn't end in a + or -, skip it.
         let lastCharacter = word.charAt(word.length - 1);

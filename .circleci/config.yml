@@ -29,6 +29,7 @@ jobs:
           paths:
             - "./node_modules"
       - run: npm run build
+      - run: node script/PreinstallMongoUnit.js
       - run: npm run test
 
   package:

@@ -29,7 +29,7 @@ class RequestVerifier {
         }
     }
 
-    public checkSignature(signature: String, timestamp: number, requestBody: String): boolean {
+    public checkSignature(signature: string, timestamp: number, requestBody: string): boolean {
         //Check the timestamp to defend against replay attacks.
         if (timestamp == null || Math.abs(new Date().getTime() / 1000 - timestamp) > FIVE_MINUTES_IN_SECONDS) {
             console.warn("Received an outdated Slack request.");

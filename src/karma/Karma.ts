@@ -1,8 +1,8 @@
 export class Karma {
-    subject: String;
+    subject: string;
     amount: number;
 
-    constructor(karmaSubject: String, requestedChange: number) {
+    constructor(karmaSubject: string, requestedChange: number) {
         this.subject = karmaSubject;
         this.amount = requestedChange;
     }
