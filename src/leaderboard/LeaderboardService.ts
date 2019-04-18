@@ -3,7 +3,7 @@ import mongoConnector, {MongoConnector} from "../storage/MongoConnector";
 
 export class LeaderboardService{
 
-    private mongoConnector: MongoConnector = mongoConnector;
+    mongoConnector: MongoConnector = mongoConnector;
 
     async getLeaderboard(sort: number = -1): Promise<Karma[]> {
         const db = await this.mongoConnector.reconnectAndGetDb();
@@ -14,6 +14,8 @@ export class LeaderboardService{
             .toArray();
 
         return leaderboard.map(
-            (value => new Karma(value.name, value.karma)));
+            (entry => {
+                return {name: entry.name, value: entry.value}
+            }));
     }
 }

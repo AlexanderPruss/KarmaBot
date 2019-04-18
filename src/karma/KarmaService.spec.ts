@@ -91,15 +91,39 @@ describe('KarmaService', function () {
         });
 
         it('has a null next-karma if the target karma is already the highest valued', async function () {
+            const expectedNeighbors : KarmaNeighbors = {
+                previousKarma: {name: "cats", value: 900},
+                nextKarma: null,
+                karma: {name: "dogs", value: 1000}
+            };
 
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("dogs");
+
+            expect(karmaNeighbors).to.eql(expectedNeighbors);
         });
 
         it('has a null previous-karma if the target karma is already the lowest valued', async function () {
+            const expectedNeighbors : KarmaNeighbors = {
+                karma: {name: "foo", value: -1000},
+                previousKarma: null,
+                nextKarma: {name: "bar", value: -900}
+            };
 
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("foo");
+
+            expect(karmaNeighbors).to.eql(expectedNeighbors);
         });
 
         it('returns an empty KarmaNeighbors if no such karma exists', async function () {
+            const expectedNeighbors : KarmaNeighbors = {
+                karma: null,
+                previousKarma: null,
+                nextKarma: null
+            };
 
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("invisible cats");
+
+            expect(karmaNeighbors).to.eql(expectedNeighbors);
         });
     });
 
