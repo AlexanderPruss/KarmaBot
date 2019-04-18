@@ -20,7 +20,7 @@ class EventHandler {
                 //Do the work of processing the event in a separate thread.
                 ctx.response.status = 200;
                 let slackEvent: IncomingSlackEvent = ctx.request.body;
-                if (slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) { //TODO: Validation should happen elsewhere
+                if (slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) {
                     console.log("Didn't receive a valid event.");
                     return;
                 }
