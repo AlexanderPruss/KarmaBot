@@ -1,7 +1,9 @@
+import logger from "../logging/Logger";
+
 class LeaderboardParser {
 
     public checkForLeaderboards() : string {
-        console.log("Leaderboard functionality isn't implemented yet.");
+        logger.info("Leaderboard functionality isn't implemented yet.");
         //TODO: Implement this I guess
         return "Not done!";
     }

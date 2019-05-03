@@ -1,6 +1,6 @@
-import * as Router from 'koa-router';
-import slackVerifier from "./RequestVerifier";
-import eventService, {IncomingSlackEvent} from "./EventService";
+import karmaUpdateHandler, {KarmaUpdateHandler} from "../karma/KarmaUpdateHandler";
+import logger from "../logging/Logger";
+import requestVerifier from "./RequestVerifier"
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
@@ -8,29 +8,69 @@ import eventService, {IncomingSlackEvent} from "./EventService";
  */
 class EventHandler {
 
-    public addRoutes(router: Router): Router {
-        router.post('/slack/events', slackVerifier.requestVerifier(), async (ctx) => {
-                //If this is a slack challenge, answer with the challenge value.
-                if (ctx.request.body.challenge != null) {
-                    ctx.response.body = ctx.request.body.challenge;
-                    return;
-                }
+    private karmaUpdateHandler: KarmaUpdateHandler = karmaUpdateHandler;
 
-                //Else, respond immediately with a 200 (as requested by the Slack Event API.)
-                //Do the work of processing the event in a separate thread.
-                ctx.response.status = 200;
-                let slackEvent: IncomingSlackEvent = ctx.request.body;
-                if (slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) {
-                    console.log("Didn't receive a valid event.");
-                    return;
-                }
-
-                eventService.handleEvent(slackEvent.event);
+    public handleApiGatewayEvent(event: APIGatewayEvent) : APIGatewayOutput {
+        if(!requestVerifier.verifyEvent(event)) {
+            return {
+                statusCode: 403,
+                isBase64Encoded: false,
+                body: "Unauthorized"
             }
-        );
+        }
 
-        return router;
+        const body = JSON.parse(event.body);
+        //If this is a slack challenge, answer with the challenge value.
+        if (body.challenge != null) {
+            logger.info("Answering Slack challenge.");
+            return {
+                    statusCode: 200,
+                    isBase64Encoded: false,
+                    body: body.challenge
+                };
+        }
+
+        //Else, respond immediately with a 200 (as requested by the Slack Event API.)
+        //Do the work of processing the event in a separate thread.
+        const slackEvent: IncomingSlackEvent = body;
+        if (slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) {
+            logger.warn("Didn't receive a valid event.");
+            return {
+                statusCode: 401,
+                isBase64Encoded: false,
+                body: "Couldn't parse slack event."
+            };
+        }
+
+        this.karmaUpdateHandler.handleEvent(slackEvent.event);
+
+        return {
+            statusCode: 200,
+            isBase64Encoded: false,
+            body: "Event processing."
+        };
     }
+}
+
+export class APIGatewayEvent {
+    body: string;
+    headers: any;
+    path: string;
+}
+
+export class APIGatewayOutput {
+    isBase64Encoded = false;
+    statusCode: number;
+    body: string;
+}
+
+export class IncomingSlackEvent {
+    event: EventData;
+}
+
+export class EventData {
+    text: string;
+    channel: string;
 }
 
 export default new EventHandler()

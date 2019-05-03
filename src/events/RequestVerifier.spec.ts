@@ -8,10 +8,6 @@ let testConfig = new SlackConfig();
 testConfig.signingSecret = "testSecret";
 requestVerifier.config = testConfig;
 
-function getSignatureOfFoo(timestamp: number) {
-    return "v0=" + crypto.createHmac('sha256', "testSecret").update(`v0:${timestamp}:foo`).digest('hex');
-}
-
 describe("RequestVerifier", () => {
 
     describe("#checkSignature", () => {
@@ -59,8 +55,26 @@ describe("RequestVerifier", () => {
 
     });
 
-    describe("#requestVerifier middleware", () => {
-        //TODO: Going to take a look at how to do tests with Koa elements later.
+    describe("#verifyEvent", () => {
+        it('pulls verification information from the API Gateway event', function () {
+            let now: number = new Date().getTime() / 1000;
+            let fourMinutesEarlier = now - 240;
+
+            const goodEarlyVerification = requestVerifier.verifyEvent({
+                body: "foo",
+                path: "any",
+                headers: {
+                    "X-Slack-Signature": getSignatureOfFoo(fourMinutesEarlier),
+                    "X-Slack-Request-Timestamp": fourMinutesEarlier
+                }
+            });
+
+            expect(goodEarlyVerification).to.be.true;
+        });
     });
 
 });
+
+function getSignatureOfFoo(timestamp: number) {
+    return "v0=" + crypto.createHmac('sha256', "testSecret").update(`v0:${timestamp}:foo`).digest('hex');
+}

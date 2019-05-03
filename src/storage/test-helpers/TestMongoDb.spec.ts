@@ -1,5 +1,6 @@
 import {MongoConfig} from "../MongoConfig";
 import * as mongoUnit from "mongo-unit";
+import logger from "../../logging/Logger";
 
 /**
  * Provides an in-memory MongoDB that integration tests can run against.
@@ -22,7 +23,7 @@ export class TestMongoDb {
             connectionString: connectionUrl
         };
 
-        console.log("Creating test database: " + connectionUrl);
+        logger.info("Creating test database: " + connectionUrl);
         return this.mongoConfig;
     }
 
