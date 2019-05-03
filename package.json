@@ -1,38 +1,33 @@
 {
-  "name": "nodets",
+  "name": "karmabot",
   "version": "1.0.0",
-  "description": "Trying out node.",
+  "description": "Slack chat bot that keeps track of how awesome things are.",
   "main": "src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon dist",
-    "test": "tsc && mocha dist/**/*.spec.js",
-    "testTsnode": "mocha -r ts-node/register src/**/*.spec.ts",
+    "test": "tsc && mocha dist/**/*.spec.js --exit",
     "lint": "eslint src --ext ts",
     "tsc": "tsc"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-serverless-express": "^3.3.5",
     "axios": "^0.18.0",
     "config": "^3.0.1",
-    "koa": "^2.6.2",
-    "koa-bodyparser": "^4.2.1",
-    "koa-router": "^7.4.0",
     "mongodb": "^3.1.10",
-    "nodemon": "^1.18.7"
+    "nodemon": "^1.18.7",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
-    "@types/koa": "^2.0.47",
-    "@types/koa-bodyparser": "^4.2.1",
-    "@types/koa-router": "^7.0.35",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/mocha": "^5.2.5",
     "@types/mongodb": "^3.1.18",
     "@types/node": "^10.11.4",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "mocha": "^5.2.0",
+    "mongo-unit": "^1.4.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.1.1"
   }

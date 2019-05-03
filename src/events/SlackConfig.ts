@@ -2,27 +2,27 @@ import * as Config from 'config';
 
 export class SlackConfig {
 
-    appId: String;
+    appId: string;
 
     /**
      * clientId is sent with clientSecret for oauth.access requests.
      */
-    clientId: String;
+    clientId: string;
 
     /**
      * clientSecret is sent with clientId for oauth.access requests.
      */
-    clientSecret: String;
+    clientSecret: string;
 
     /**
      * Slack signs its requests with this token.
      */
-    signingSecret: String;
+    signingSecret: string;
 
     /**
      * The authentication for the bot.
      */
-    botSecret: String;
+    botSecret: string;
 
 }
 

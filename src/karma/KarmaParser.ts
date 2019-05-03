@@ -1,15 +1,4 @@
-/**
- * Just a glorified key-value holder.
- */
-export class Karma {
-    subject: String;
-    amount: number;
-
-    constructor(karmaSubject: String, requestedChange: number) {
-        this.subject = karmaSubject;
-        this.amount = requestedChange;
-    }
-}
+import {Karma} from "./Karma";
 
 const INCREMENTER = "+";
 const DECREMENTER = "-";
@@ -17,14 +6,14 @@ const DECREMENTER = "-";
 //Parses a message sent to the bot and translates it into a collection of Karma requests.
 export class KarmaParser {
 
-    public parseMessage(message: String): Karma[] {
-        let karmaRequests = [];
+    public parseMessage(message: string): Karma[] {
+        const karmaRequests = [];
         message = message.toLowerCase();
 
         message.split(" ").forEach((word) => {
 
-                let karmaRequest = this.parseWord(word);
-                if (karmaRequest.amount == 0 || karmaRequest.subject === "") {
+                const karmaRequest = this.parseWord(word);
+                if (karmaRequest.value == 0 || karmaRequest.name === "") {
                     return;
                 }
 
@@ -48,10 +37,10 @@ export class KarmaParser {
      *  Also fun - '' to identify a special thing? hmmmmm
      */
     private parseWord(word: string): Karma {
-        let activeSymbol: String = null;
+        let activeSymbol: string = null;
 
         //If the word doesn't end in a + or -, skip it.
-        let lastCharacter = word.charAt(word.length - 1);
+        const lastCharacter = word.charAt(word.length - 1);
         if (lastCharacter == INCREMENTER) {
             activeSymbol = INCREMENTER;
         } else if (lastCharacter == DECREMENTER) {
@@ -71,7 +60,7 @@ export class KarmaParser {
         }
 
         //TODO: Can clean the subject here if we want, by removing quotation marks and such.
-        //TODO: This would let me say "c++"++ to increment the karma of c++.
+        //TODO: This would const me say "c++"++ to increment the karma of c++.
 
         if (activeSymbol == DECREMENTER) {
             requestedChange *= -1;
@@ -88,24 +77,24 @@ export class KarmaParser {
      */
     private prettifyKarmaRequests(requests: Karma[]): Karma[] {
         for (let i = 0; i < requests.length; i++) {
-            let request = requests[i];
-            let karmaSubject = request.subject;
+            const request = requests[i];
+            const karmaSubject = request.name;
 
             //Capitalized karma looks pretty
-            request.subject = karmaSubject.charAt(0).toUpperCase() + karmaSubject.slice(1);
+            request.name = karmaSubject.charAt(0).toUpperCase() + karmaSubject.slice(1);
 
             //Pia can't lose points.
-            if (request.subject === "Pia" && request.amount < 0) {
-                request.amount *= -1;
+            if (request.name === "Pia" && request.value < 0) {
+                request.value *= -1;
             }
 
             //Everyone except Pia can't change their karma by more than 5 at a time.
-            if (request.subject !== "Pia") {
-                if (request.amount > 5) {
-                    request.amount = 5;
+            if (request.name !== "Pia") {
+                if (request.value > 5) {
+                    request.value = 5;
                 }
-                if (request.amount < -5) {
-                    request.amount = -5;
+                if (request.value < -5) {
+                    request.value = -5;
                 }
             }
         }

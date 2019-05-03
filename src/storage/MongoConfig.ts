@@ -2,7 +2,7 @@ import * as Config from 'config';
 
 export class MongoConfig {
 
-    connectionString: String;
+    connectionString: string;
 
 }
 

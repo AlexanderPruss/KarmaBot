@@ -1,5 +1,5 @@
-const awsServerlessExpress = require('aws-serverless-express')
-const app = require('./app')
-const server = awsServerlessExpress.createServer(app)
+import eventHandler from "./events/EventHandler";
 
-exports.handler = (event, context) => { awsServerlessExpress.proxy(server, event, context) };
+exports.handler = (event, context) => {
+    return eventHandler.handleApiGatewayEvent(event);
+};

@@ -29,6 +29,7 @@ jobs:
           paths:
             - "./node_modules"
       - run: npm run build
+      - run: node script/PreinstallMongoUnit.js
       - run: npm run test
 
   package:
@@ -79,3 +80,4 @@ jobs:
       - run: ls deploymentworkspace
       - run: sudo pip install awscli
       - run: aws s3 cp deploymentworkspace/karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment.zip
+      - run: aws lambda update-function-code --function-name karmabotRespondToSlack --s3-bucket karmabotdeployment --s3-key karmabotdeployment.zip
