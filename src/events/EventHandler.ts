@@ -11,7 +11,7 @@ export class EventHandler {
     karmaUpdateHandler: KarmaUpdateHandler = karmaUpdateHandler;
     requestVerifier: RequestVerifier = requestVerifier;
 
-    public handleApiGatewayEvent(event: APIGatewayEvent): APIGatewayOutput {
+    public async handleApiGatewayEvent(event: APIGatewayEvent): Promise<APIGatewayOutput> {
         if (!this.requestVerifier.verifyEvent(event)) {
             return {
                 statusCode: 403,
@@ -43,7 +43,9 @@ export class EventHandler {
             };
         }
 
-        this.karmaUpdateHandler.handleEvent(slackEvent.event);
+        //TODO: Need to see if this is too slow. But if we don't await here, then the lambda
+        //TODO: completes before the threads it spawned have!
+        await this.karmaUpdateHandler.handleEvent(slackEvent.event);
 
         return {
             statusCode: 200,

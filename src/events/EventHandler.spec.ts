@@ -7,13 +7,13 @@ describe("EventHandler", () => {
 
     describe("#handleAPIGatewayEvent", () => {
 
-        it('returns a 403 if verification fails ', function () {
+        it('returns a 403 if verification fails ', async function () {
             const handler = new EventHandler();
             const verifier = new RequestVerifier();
             verifier.verifyEvent = () => {return false};
             handler.requestVerifier = verifier;
 
-            const response = handler.handleApiGatewayEvent(null);
+            const response = await handler.handleApiGatewayEvent(null);
 
             expect(response).to.eql({
                 statusCode: 403,
@@ -22,13 +22,13 @@ describe("EventHandler", () => {
             });
         });
 
-        it('answers with a challenge if a challenge is present in the request body', function () {
+        it('answers with a challenge if a challenge is present in the request body', async function () {
             const handler = new EventHandler();
             const verifier = new RequestVerifier();
             verifier.verifyEvent = () => {return true};
             handler.requestVerifier = verifier;
 
-            const response = handler.handleApiGatewayEvent({
+            const response = await handler.handleApiGatewayEvent({
                 headers: null,
                 path: null,
                 body: "{\"challenge\": \"fizzbuzz\"}"
@@ -41,7 +41,7 @@ describe("EventHandler", () => {
             });
         });
 
-        it('returns a 401 if the slack event is malformed', function () {
+        it('returns a 401 if the slack event is malformed', async function () {
             const handler = new EventHandler();
             const verifier = new RequestVerifier();
             verifier.verifyEvent = () => {return true};
@@ -50,7 +50,7 @@ describe("EventHandler", () => {
               event: null
             };
 
-            const response = handler.handleApiGatewayEvent({
+            const response = await handler.handleApiGatewayEvent({
                 headers: null,
                 path: null,
                 body: JSON.stringify(event)
@@ -83,7 +83,7 @@ describe("EventHandler", () => {
                 event: innerEvent
             };
 
-            const response = handler.handleApiGatewayEvent({
+            const response = await handler.handleApiGatewayEvent({
                 headers: null,
                 path: null,
                 body: JSON.stringify(event)
