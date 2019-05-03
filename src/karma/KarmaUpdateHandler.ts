@@ -12,27 +12,27 @@ export class KarmaUpdateHandler {
     async handleEvent(event: EventData) {
         logger.info("Checking for possible karma updates.");
 
-        let karmaRequests = karmaParser.parseMessage(event.text);
+        const karmaRequests = karmaParser.parseMessage(event.text);
         if (karmaRequests.length == 0) {
             logger.info("No karma updates found.");
             return;
         }
 
-        let updatedKarmaPromises = karmaRequests.map(karma => {
+        const updatedKarmaPromises = karmaRequests.map(karma => {
             return karmaService.updateKarma(karma)
         });
-        let updatedKarmas = await Promise.all(updatedKarmaPromises);
+        const updatedKarmas = await Promise.all(updatedKarmaPromises);
         logger.info("Updated karma.");
 
-        let responseMessagePromise = updatedKarmas.map(this.toResponseMessage);
-        let responseMessages = await Promise.all(responseMessagePromise);
+        const responseMessagePromise = updatedKarmas.map(this.toResponseMessage);
+        const responseMessages = await Promise.all(responseMessagePromise);
         logger.info("Constructed response messages.");
 
         this.eventService.respondWithMessage(responseMessages.join("\n-----\n"), event.channel);
     }
 
     async toResponseMessage(updatedKarma: Karma): Promise<String> {
-        let karmaNeighbors = await karmaService.getKarmaNeighbors(updatedKarma.name.toString());
+        const karmaNeighbors = await karmaService.getKarmaNeighbors(updatedKarma.name.toString());
 
         let message = `${karmaNeighbors.karma.name} now has ${karmaNeighbors.karma.value} karma.`;
         if (karmaNeighbors.nextKarma != null) {

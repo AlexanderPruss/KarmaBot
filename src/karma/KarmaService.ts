@@ -14,11 +14,11 @@ export class KarmaService {
      * Returns the karma with the given name, or null if no such karma can be found.
      * @param name
      */
-    async findKarma(name: string) : Promise<Karma> {
+    async findKarma(name: string): Promise<Karma> {
         logger.info(`Finding karma with name ${name}.`);
 
         const db = await this.mongoConnector.reconnectAndGetDb();
-        const foundKarma : Karma[] = await db.collection("karma").find({name: {$eq: name}}).toArray();
+        const foundKarma: Karma[] = await db.collection("karma").find({name: {$eq: name}}).toArray();
 
         if (foundKarma.length == 0) {
             logger.warn(`Couldn't find karma with name ${name}.`);
@@ -37,7 +37,7 @@ export class KarmaService {
     async updateKarma(karma: Karma): Promise<Karma> {
         const db = await this.mongoConnector.reconnectAndGetDb();
 
-        let updateResult = await db.collection("karma").findOneAndUpdate(
+        const updateResult = await db.collection("karma").findOneAndUpdate(
             {name: karma.name},
             {
                 $set: {name: karma.name},
@@ -54,12 +54,12 @@ export class KarmaService {
     async getKarmaNeighbors(name: string): Promise<KarmaNeighbors> {
         logger.info(`Finding karma neighbors for ${name}`);
         const db = await this.mongoConnector.reconnectAndGetDb();
-        let targetKarma = await this.findKarma(name);
+        const targetKarma = await this.findKarma(name);
         if (targetKarma == null) {
             return new KarmaNeighbors(null, null, null);
         }
 
-        let nextHighest = await db.collection("karma").aggregate([
+        const nextHighest = await db.collection("karma").aggregate([
             {
                 $match: {value: {$gt: targetKarma.value}}
             },
@@ -79,7 +79,7 @@ export class KarmaService {
                 $limit: 1
             }]
         ).toArray();
-        let nextLowest = await db.collection("karma").aggregate([
+        const nextLowest = await db.collection("karma").aggregate([
             {
                 $match: {value: {$lt: targetKarma.value}}
             },
@@ -100,13 +100,14 @@ export class KarmaService {
             }]
         ).toArray();
 
-        let nextHighestKarma : Karma = nextHighest.length == 0 ?
+        const nextHighestKarma: Karma = nextHighest.length == 0 ?
             null : {name: nextHighest[0].name, value: nextHighest[0].value};
-        let nextLowestKarma : Karma = nextLowest.length == 0 ?
+        const nextLowestKarma: Karma = nextLowest.length == 0 ?
             null : {name: nextLowest[0].name, value: nextLowest[0].value};
 
         return new KarmaNeighbors(targetKarma, nextLowestKarma, nextHighestKarma);
     }
+
     //TODO: Hmm. Do I want to somehow handle multiple names having the same karma?
     //TODO: ... how about just count how many other things with that same karma there are?
 }

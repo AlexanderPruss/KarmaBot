@@ -10,8 +10,8 @@ class EventHandler {
 
     private karmaUpdateHandler: KarmaUpdateHandler = karmaUpdateHandler;
 
-    public handleApiGatewayEvent(event: APIGatewayEvent) : APIGatewayOutput {
-        if(!requestVerifier.verifyEvent(event)) {
+    public handleApiGatewayEvent(event: APIGatewayEvent): APIGatewayOutput {
+        if (!requestVerifier.verifyEvent(event)) {
             return {
                 statusCode: 403,
                 isBase64Encoded: false,
@@ -24,10 +24,10 @@ class EventHandler {
         if (body.challenge != null) {
             logger.info("Answering Slack challenge.");
             return {
-                    statusCode: 200,
-                    isBase64Encoded: false,
-                    body: body.challenge
-                };
+                statusCode: 200,
+                isBase64Encoded: false,
+                body: body.challenge
+            };
         }
 
         //Else, respond immediately with a 200 (as requested by the Slack Event API.)

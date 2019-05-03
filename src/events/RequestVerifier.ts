@@ -18,8 +18,8 @@ const FIVE_MINUTES_IN_SECONDS = 300;
 class RequestVerifier {
 
     config: SlackConfig = slackConfig;
-    
-    public verifyEvent(event: APIGatewayEvent) : boolean {
+
+    public verifyEvent(event: APIGatewayEvent): boolean {
         logger.info("Verifying an incoming slack event.");
         const signature = event.headers[SIGNATURE_HEADER];
         const timestamp = Number(event.headers[TIMESTAMP_HEADER]);
@@ -36,10 +36,10 @@ class RequestVerifier {
             return false;
         }
 
-        let hmac = crypto.createHmac('sha256', this.config.signingSecret.toString());
+        const hmac = crypto.createHmac('sha256', this.config.signingSecret.toString());
 
-        let stringToHash = `v0:${timestamp}:${requestBody}`;
-        let computedSignature = "v0=" + hmac.update(stringToHash).digest('hex');
+        const stringToHash = `v0:${timestamp}:${requestBody}`;
+        const computedSignature = "v0=" + hmac.update(stringToHash).digest('hex');
 
         if (computedSignature !== signature) {
             logger.warn("Received a slack request with a bad signature.");

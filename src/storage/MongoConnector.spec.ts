@@ -1,6 +1,6 @@
 import {MongoConnector} from "./MongoConnector";
-import {expect} from 'chai';
 import * as chai from 'chai';
+import {expect} from 'chai';
 import * as chaiAsPromised from "chai-as-promised";
 import {MongoError} from "mongodb";
 import {TestMongoDb} from "./test-helpers/TestMongoDb.spec";
@@ -44,8 +44,8 @@ describe("MongoConnector", () => {
         });
 
         it("shouldn't reconnect if the connection still works", async () => {
-            let db = await mongoConnector.reconnectAndGetDb();
-            let dbReconnected = await mongoConnector.reconnectAndGetDb();
+            const db = await mongoConnector.reconnectAndGetDb();
+            const dbReconnected = await mongoConnector.reconnectAndGetDb();
 
             expect(db == dbReconnected);
         });
@@ -54,7 +54,7 @@ describe("MongoConnector", () => {
             const mongoConnector = new MongoConnector();
             mongoConnector.config = {connectionString: "foo bar fake lol"};
 
-            let dbPromise = mongoConnector.reconnectAndGetDb();
+            const dbPromise = mongoConnector.reconnectAndGetDb();
 
             await expect(dbPromise).to.be.rejectedWith(MongoError);
         });
@@ -62,7 +62,7 @@ describe("MongoConnector", () => {
 
     describe("#closeConnection", () => {
         it("Closes the DB connection.", async () => {
-            let db = await mongoConnector.reconnectAndGetDb();
+            const db = await mongoConnector.reconnectAndGetDb();
             await mongoConnector.closeConnection();
 
             const collectionsPromise = db.listCollections().toArray();

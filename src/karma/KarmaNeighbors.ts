@@ -1,7 +1,7 @@
 import {Karma} from "./Karma";
 
 export class KarmaNeighbors {
-    karma : Karma;
+    karma: Karma;
     previousKarma: Karma;
     nextKarma: Karma;
 

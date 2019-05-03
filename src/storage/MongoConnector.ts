@@ -41,7 +41,6 @@ export class MongoConnector {
     }
 
 
-
 }
 
 export default new MongoConnector();

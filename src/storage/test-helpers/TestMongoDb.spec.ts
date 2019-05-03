@@ -18,7 +18,7 @@ export class TestMongoDb {
             throw new Error("Test Mongo Db is already running.");
         }
 
-        let connectionUrl = await mongoUnit.start();
+        const connectionUrl = await mongoUnit.start();
         this.mongoConfig = {
             connectionString: connectionUrl
         };

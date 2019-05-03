@@ -7,12 +7,12 @@ const DECREMENTER = "-";
 export class KarmaParser {
 
     public parseMessage(message: string): Karma[] {
-        let karmaRequests = [];
+        const karmaRequests = [];
         message = message.toLowerCase();
 
         message.split(" ").forEach((word) => {
 
-                let karmaRequest = this.parseWord(word);
+                const karmaRequest = this.parseWord(word);
                 if (karmaRequest.value == 0 || karmaRequest.name === "") {
                     return;
                 }
@@ -40,7 +40,7 @@ export class KarmaParser {
         let activeSymbol: string = null;
 
         //If the word doesn't end in a + or -, skip it.
-        let lastCharacter = word.charAt(word.length - 1);
+        const lastCharacter = word.charAt(word.length - 1);
         if (lastCharacter == INCREMENTER) {
             activeSymbol = INCREMENTER;
         } else if (lastCharacter == DECREMENTER) {
@@ -60,7 +60,7 @@ export class KarmaParser {
         }
 
         //TODO: Can clean the subject here if we want, by removing quotation marks and such.
-        //TODO: This would let me say "c++"++ to increment the karma of c++.
+        //TODO: This would const me say "c++"++ to increment the karma of c++.
 
         if (activeSymbol == DECREMENTER) {
             requestedChange *= -1;
@@ -77,8 +77,8 @@ export class KarmaParser {
      */
     private prettifyKarmaRequests(requests: Karma[]): Karma[] {
         for (let i = 0; i < requests.length; i++) {
-            let request = requests[i];
-            let karmaSubject = request.name;
+            const request = requests[i];
+            const karmaSubject = request.name;
 
             //Capitalized karma looks pretty
             request.name = karmaSubject.charAt(0).toUpperCase() + karmaSubject.slice(1);

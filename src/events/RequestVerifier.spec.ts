@@ -4,7 +4,7 @@ import {SlackConfig} from "./SlackConfig";
 import {expect} from 'chai';
 import crypto = require("crypto");
 
-let testConfig = new SlackConfig();
+const testConfig = new SlackConfig();
 testConfig.signingSecret = "testSecret";
 requestVerifier.config = testConfig;
 
@@ -21,9 +21,9 @@ describe("RequestVerifier", () => {
         });
 
         it("returns false if the timestamp is more than five minutes out of date", () => {
-            let now: number = new Date().getTime() / 1000;
-            let fiveMinutesEarlier = now - 301;
-            let fiveMinutesLater = now + 301;
+            const now: number = new Date().getTime() / 1000;
+            const fiveMinutesEarlier = now - 301;
+            const fiveMinutesLater = now + 301;
 
             const tooEarly = requestVerifier.checkSignature(getSignatureOfFoo(fiveMinutesLater), fiveMinutesEarlier, "foo");
             const tooLate = requestVerifier.checkSignature(getSignatureOfFoo(fiveMinutesLater), fiveMinutesLater, "foo");
@@ -34,7 +34,7 @@ describe("RequestVerifier", () => {
         });
 
         it("returns false if the computed signatures don't match", () => {
-            let now: number = new Date().getTime() / 1000;
+            const now: number = new Date().getTime() / 1000;
 
             const badSignature = requestVerifier.checkSignature("nonsense", now, "foo");
 
@@ -42,9 +42,9 @@ describe("RequestVerifier", () => {
         });
 
         it("returns true if the signatures match and the timestamp is about right", () => {
-            let now: number = new Date().getTime() / 1000;
-            let fourMinutesEarlier = now - 240;
-            let fourMinutesLater = now + 240;
+            const now: number = new Date().getTime() / 1000;
+            const fourMinutesEarlier = now - 240;
+            const fourMinutesLater = now + 240;
 
             const goodEarlyVerification = requestVerifier.checkSignature(getSignatureOfFoo(fourMinutesEarlier), fourMinutesEarlier, "foo");
             const goodLateVerification = requestVerifier.checkSignature(getSignatureOfFoo(fourMinutesLater), fourMinutesLater, "foo");
@@ -57,8 +57,8 @@ describe("RequestVerifier", () => {
 
     describe("#verifyEvent", () => {
         it('pulls verification information from the API Gateway event', function () {
-            let now: number = new Date().getTime() / 1000;
-            let fourMinutesEarlier = now - 240;
+            const now: number = new Date().getTime() / 1000;
+            const fourMinutesEarlier = now - 240;
 
             const goodEarlyVerification = requestVerifier.verifyEvent({
                 body: "foo",

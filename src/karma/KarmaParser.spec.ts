@@ -2,7 +2,7 @@ import {KarmaParser} from "./KarmaParser";
 import {expect} from 'chai';
 import {Karma} from "./Karma";
 
-let parser = new KarmaParser();
+const parser = new KarmaParser();
 describe("KarmaParser", () => {
 
     describe("#parseMessage", () => {

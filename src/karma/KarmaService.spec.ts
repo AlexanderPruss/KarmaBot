@@ -12,23 +12,23 @@ describe('KarmaService', function () {
     const mongoConnector = new MongoConnector();
     karmaService.mongoConnector = mongoConnector;
 
-    const testData : Karma[] = [
-        {name : "foo", value: -1000},
-        {name : "bar", value: -900},
-        {name : "baz", value: -800},
-        {name : "stuff", value: 0},
-        {name : "hotdogs", value: 2},
-        {name : "karmabot", value: 9},
-        {name : "parrots", value: 800},
-        {name : "cats", value: 900},
-        {name : "dogs", value: 1000}
+    const testData: Karma[] = [
+        {name: "foo", value: -1000},
+        {name: "bar", value: -900},
+        {name: "baz", value: -800},
+        {name: "stuff", value: 0},
+        {name: "hotdogs", value: 2},
+        {name: "karmabot", value: 9},
+        {name: "parrots", value: 800},
+        {name: "cats", value: 900},
+        {name: "dogs", value: 1000}
     ];
 
     before(async () => {
         const mongoConfig = await testDb.start();
         mongoConnector.config = mongoConfig;
 
-        for(const karma of testData) {
+        for (const karma of testData) {
             await testDb.saveDocument({...karma}, "karma");
         }
     });
@@ -41,7 +41,7 @@ describe('KarmaService', function () {
     describe("#findKarma", () => {
 
         it('finds a karma by name', async function () {
-            const expectedKarma :Karma = {name: "karmabot", value: 9};
+            const expectedKarma: Karma = {name: "karmabot", value: 9};
 
             const karma = await karmaService.findKarma("karmabot");
 
@@ -59,7 +59,7 @@ describe('KarmaService', function () {
     describe("#updateKarma", () => {
 
         it('updates the value of an existing karma', async function () {
-            const expectedKarma : Karma = {name: "stuff", value: 1};
+            const expectedKarma: Karma = {name: "stuff", value: 1};
 
             const karma = await karmaService.updateKarma(expectedKarma);
 
@@ -67,7 +67,7 @@ describe('KarmaService', function () {
         });
 
         it('upserts non-existing karmas', async function () {
-            const expectedKarma : Karma = {name: "nonexisting stuff", value: 1};
+            const expectedKarma: Karma = {name: "nonexisting stuff", value: 1};
 
             const karma = await karmaService.updateKarma(expectedKarma);
 
@@ -79,7 +79,7 @@ describe('KarmaService', function () {
     describe("#getKarmaNeighbors", () => {
 
         it('finds the given karma, as well as its next-closest neighbors by value', async function () {
-            const expectedNeighbors : KarmaNeighbors = {
+            const expectedNeighbors: KarmaNeighbors = {
                 karma: {name: "cats", value: 900},
                 previousKarma: {name: "parrots", value: 800},
                 nextKarma: {name: "dogs", value: 1000}
@@ -91,7 +91,7 @@ describe('KarmaService', function () {
         });
 
         it('has a null next-karma if the target karma is already the highest valued', async function () {
-            const expectedNeighbors : KarmaNeighbors = {
+            const expectedNeighbors: KarmaNeighbors = {
                 previousKarma: {name: "cats", value: 900},
                 nextKarma: null,
                 karma: {name: "dogs", value: 1000}
@@ -103,7 +103,7 @@ describe('KarmaService', function () {
         });
 
         it('has a null previous-karma if the target karma is already the lowest valued', async function () {
-            const expectedNeighbors : KarmaNeighbors = {
+            const expectedNeighbors: KarmaNeighbors = {
                 karma: {name: "foo", value: -1000},
                 previousKarma: null,
                 nextKarma: {name: "bar", value: -900}
@@ -115,7 +115,7 @@ describe('KarmaService', function () {
         });
 
         it('returns an empty KarmaNeighbors if no such karma exists', async function () {
-            const expectedNeighbors : KarmaNeighbors = {
+            const expectedNeighbors: KarmaNeighbors = {
                 karma: null,
                 previousKarma: null,
                 nextKarma: null
