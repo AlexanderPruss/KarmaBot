@@ -1,5 +1,5 @@
 import eventHandler from "./events/EventHandler";
 
-exports.handler = (event, context) => {
+exports.handler = async (event, context) => {
     return eventHandler.handleApiGatewayEvent(event);
 };
