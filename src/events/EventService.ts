@@ -9,7 +9,7 @@ export class EventService {
 
     config: SlackConfig = slackConfig;
 
-    public respondWithMessage(message: string, channel: string) {
+    public async respondWithMessage(message: string, channel: string) {
         logger.info("Sending response message.");
         axios.post("https://slack.com/api/chat.postMessage",
             {

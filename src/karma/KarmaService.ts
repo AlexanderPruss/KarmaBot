@@ -35,9 +35,10 @@ export class KarmaService {
     }
 
     async updateKarma(karma: Karma): Promise<Karma> {
+        logger.info(`Updating karma of ${karma.name}`);
         const db = await this.mongoConnector.reconnectAndGetDb();
 
-        const updateResult = await db.collection("karma").findOneAndUpdate(
+        await db.collection("karma").findOneAndUpdate(
             {name: karma.name},
             {
                 $set: {name: karma.name},

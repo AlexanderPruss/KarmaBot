@@ -15,7 +15,7 @@ const FIVE_MINUTES_IN_SECONDS = 300;
  *
  * This algorithm is implemented as Koa middleware and turned on for Slack requests.
  */
-class RequestVerifier {
+export class RequestVerifier {
 
     config: SlackConfig = slackConfig;
 

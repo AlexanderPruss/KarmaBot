@@ -1,17 +1,18 @@
 import karmaUpdateHandler, {KarmaUpdateHandler} from "../karma/KarmaUpdateHandler";
 import logger from "../logging/Logger";
-import requestVerifier from "./RequestVerifier"
+import requestVerifier, {RequestVerifier} from "./RequestVerifier"
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
  * but also with Slack Event API challenges - see https://api.slack.com/events/url_verification.
  */
-class EventHandler {
+export class EventHandler {
 
-    private karmaUpdateHandler: KarmaUpdateHandler = karmaUpdateHandler;
+    karmaUpdateHandler: KarmaUpdateHandler = karmaUpdateHandler;
+    requestVerifier: RequestVerifier = requestVerifier;
 
     public handleApiGatewayEvent(event: APIGatewayEvent): APIGatewayOutput {
-        if (!requestVerifier.verifyEvent(event)) {
+        if (!this.requestVerifier.verifyEvent(event)) {
             return {
                 statusCode: 403,
                 isBase64Encoded: false,

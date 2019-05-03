@@ -5,9 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon dist",
-    "test": "tsc && mocha dist/**/*.spec.js",
-    "testTsnode": "mocha -r ts-node/register src/**/*.spec.ts",
+    "test": "tsc && mocha dist/**/*.spec.js --exit",
     "lint": "eslint src --ext ts",
     "tsc": "tsc"
   },

@@ -18,6 +18,7 @@ export class MongoConnector {
     }
 
     async closeConnection() {
+        logger.info("Closing connection.");
         if (this.client == null) {
             return;
         }
