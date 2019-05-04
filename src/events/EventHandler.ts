@@ -11,6 +11,7 @@ import {TeamAuthToken} from "../oauth/TeamAuthToken";
  * Apparently, Slack request verification will fail for Slack auth0 requests. So we only do request verification
  * for non-auth0 requests
  */
+//TODO: This needs to be split up into smaller fxns or multiple classes, auth0 ended up being pretty heavy
 export class EventHandler {
 
     authService: OAuthService = authService;
@@ -21,7 +22,7 @@ export class EventHandler {
         if(event.queryStringParameters != null && event.queryStringParameters["auth"] != null) {
             logger.info("Authorizing with auth0");
             try {
-                logger.info("Query Parameters: " + event.queryStringParameters);
+                logger.info(`Incoming code - ${event.queryStringParameters["code"]}`);
                 await this.authService.authorizeTeam(event.queryStringParameters["code"]);
             } catch (error) {
                 logger.error("Failed to authorize with auth0.", error);
@@ -65,6 +66,14 @@ export class EventHandler {
         //Do the work of processing the event in a separate thread.
         const slackEvent: IncomingSlackEvent = body;
         const token : TeamAuthToken = await this.authService.getTeamToken(slackEvent.team_id);
+        if(token == null) {
+            return {
+                statusCode: 403,
+                isBase64Encoded: false,
+                body: "Couldn't find an auth token for the team."
+            };
+        }
+
         if (slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) {
             logger.warn("Didn't receive a valid event.");
             return {
