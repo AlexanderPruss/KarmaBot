@@ -48,7 +48,7 @@ describe("EventHandler", () => {
             });
         });
 
-        it('returns a 401 if the slack event is malformed', async function () {
+     /*  it('returns a 401 if the slack event is malformed', async function () {
             const handler = new EventHandler();
             const verifier = new RequestVerifier();
             const authService = new OAuthService();
@@ -74,7 +74,7 @@ describe("EventHandler", () => {
                 isBase64Encoded: false,
                 body: "Couldn't parse slack event."
             });
-        });
+        });*/
 
         it('writes an auth token if the path matches', async function () {
             const handler = new EventHandler();
