@@ -38,6 +38,7 @@ describe("EventHandler", () => {
             const response = await handler.handleApiGatewayEvent({
                 headers: null,
                 path: null,
+                queryStringParameters: null,
                 body: "{\"challenge\": \"fizzbuzz\"}"
             });
 
@@ -76,7 +77,7 @@ describe("EventHandler", () => {
             });
         });*/
 
-        it('writes an auth token if the path matches', async function () {
+        it('writes an auth token if the query string matches', async function () {
             const handler = new EventHandler();
             const verifier = new RequestVerifier();
             const authService = new OAuthService();
@@ -96,7 +97,8 @@ describe("EventHandler", () => {
 
             const response = await handler.handleApiGatewayEvent({
                 headers: null,
-                path: "auth",
+                path: null,
+                queryStringParameters: {auth: true},
                 body: JSON.stringify(event)
             });
 
@@ -127,7 +129,8 @@ describe("EventHandler", () => {
 
             const response = await handler.handleApiGatewayEvent({
                 headers: null,
-                path: "auth",
+                path: null,
+                queryStringParameters: {auth: true},
                 body: JSON.stringify(event)
             });
 
@@ -176,6 +179,7 @@ describe("EventHandler", () => {
             const response = await handler.handleApiGatewayEvent({
                 headers: null,
                 path: null,
+                queryStringParameters: null,
                 body: JSON.stringify(event)
             });
 
