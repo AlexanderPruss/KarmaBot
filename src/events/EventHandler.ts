@@ -21,6 +21,7 @@ export class EventHandler {
         if(event.queryStringParameters != null && event.queryStringParameters["auth"] != null) {
             logger.info("Authorizing with auth0");
             try {
+                logger.info("Auth 0 request: " + event.body);
                 await this.authService.authorizeTeam(JSON.parse(event.body));
             } catch (error) {
                 logger.error("Failed to authorize with auth0.", error);
