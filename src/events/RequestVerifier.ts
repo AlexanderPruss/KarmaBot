@@ -36,7 +36,7 @@ export class RequestVerifier {
             return false;
         }
 
-        const hmac = crypto.createHmac('sha256', this.config.signingSecret.toString());
+        const hmac = crypto.createHmac('sha256', this.config.signingSecret);
 
         const stringToHash = `v0:${timestamp}:${requestBody}`;
         const computedSignature = "v0=" + hmac.update(stringToHash).digest('hex');

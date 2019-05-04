@@ -37,7 +37,7 @@ export class MongoConnector {
 
         logger.info("Reconnecting to mongoDb.");
         this.client = await MongoClient.connect(
-            this.config.connectionString.toString(),
+            this.config.connectionString,
             {useNewUrlParser: true});
     }
 

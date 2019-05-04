@@ -1,13 +1,16 @@
 import karmaUpdateHandler, {KarmaUpdateHandler} from "../karma/KarmaUpdateHandler";
 import logger from "../logging/Logger";
 import requestVerifier, {RequestVerifier} from "./RequestVerifier"
+import authService, {OAuthService} from "../oauth/OAuthService";
+import {TeamAuthToken} from "../oauth/TeamAuthToken";
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
- * but also with Slack Event API challenges - see https://api.slack.com/events/url_verification.
+ * but also with Slack Event API challenges and auth0- see https://api.slack.com/events/url_verification.
  */
 export class EventHandler {
 
+    authService: OAuthService = authService;
     karmaUpdateHandler: KarmaUpdateHandler = karmaUpdateHandler;
     requestVerifier: RequestVerifier = requestVerifier;
 
@@ -20,7 +23,28 @@ export class EventHandler {
             }
         }
 
+        logger.info(`Path: ${event.path}`);
         const body = JSON.parse(event.body);
+
+        if(event.path == "auth") {
+            logger.info("Authorizing with auth0");
+            try {
+                await this.authService.authorizeTeam(body);
+            } catch (error) {
+                logger.error("Failed to authorize with auth0.", error);
+                return {
+                    statusCode: 403,
+                    isBase64Encoded: false,
+                    body: "Unauthorized"
+                }
+            }
+            return {
+                statusCode: 200,
+                isBase64Encoded: false,
+                body: "Authorization successful"
+            }
+        }
+
         //If this is a slack challenge, answer with the challenge value.
         if (body.challenge != null) {
             logger.info("Answering Slack challenge.");
@@ -34,6 +58,7 @@ export class EventHandler {
         //Else, respond immediately with a 200 (as requested by the Slack Event API.)
         //Do the work of processing the event in a separate thread.
         const slackEvent: IncomingSlackEvent = body;
+        const token : TeamAuthToken = await this.authService.getTeamToken(slackEvent.team_id);
         if (slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) {
             logger.warn("Didn't receive a valid event.");
             return {
@@ -45,7 +70,7 @@ export class EventHandler {
 
         //TODO: Need to see if this is too slow. But if we don't await here, then the lambda
         //TODO: completes before the threads it spawned have!
-        await this.karmaUpdateHandler.handleEvent(slackEvent.event);
+        await this.karmaUpdateHandler.handleEvent(slackEvent.event, token);
 
         return {
             statusCode: 200,
@@ -69,6 +94,7 @@ export class APIGatewayOutput {
 
 export class IncomingSlackEvent {
     event: EventData;
+    team_id: string;
 }
 
 export class EventData {
