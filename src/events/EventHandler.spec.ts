@@ -52,6 +52,7 @@ describe("EventHandler", () => {
             const handler = new EventHandler();
             const verifier = new RequestVerifier();
             const authService = new OAuthService();
+            authService.mongoConnector = null;
             authService.getTeamToken = () => {return null};
             verifier.verifyEvent = () => {
                 return true
