@@ -11,7 +11,7 @@ export class EventService {
 
     public async respondWithMessage(message: string, channel: string) {
         logger.info("Sending response message.");
-        axios.post("https://slack.com/api/chat.postMessage",
+        await axios.post("https://slack.com/api/chat.postMessage",
             {
                 text: message,
                 channel: channel
@@ -24,7 +24,7 @@ export class EventService {
             .then(function (response) {
                 logger.info("Response sent successfully.");
             }).catch(function (error) {
-            console.error(`Error from Slack: ${error}.`)
+                logger.error(`Error from Slack: ${error}.`)
         });
     }
 
