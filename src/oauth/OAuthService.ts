@@ -21,10 +21,12 @@ export class OAuthService {
                     password: this.slackConfig.clientSecret
                 }
             });
-        if(authResponse.status != 200) {
+        if(authResponse.status != 200 || authResponse.data.team_id == null) {
             logger.error("Failed to authenticate with auth0: " + authResponse.statusText);
+            logger.error("Failure response: " + authResponse.data);
             throw new Error("Failed to authenticate with auth0")
         }
+
         const token: TeamAuthToken = authResponse.data;
         await this.saveTeamToken(token);
     }
