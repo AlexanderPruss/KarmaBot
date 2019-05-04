@@ -4,7 +4,6 @@ import {expect} from "chai";
 import {KarmaUpdateHandler} from "../karma/KarmaUpdateHandler";
 import {OAuthService} from "../oauth/OAuthService";
 import {TeamAuthToken} from "../oauth/TeamAuthToken";
-import {AuthRequest} from "../oauth/AuthRequest";
 
 describe("EventHandler", () => {
 
@@ -86,20 +85,17 @@ describe("EventHandler", () => {
             };
             handler.requestVerifier = verifier;
             handler.authService = authService;
-            authService.authorizeTeam = async (authRequest) => {
-                if(authRequest.code != "1234") {
+            authService.authorizeTeam = async (code) => {
+                if(code != "1234") {
                     throw new Error("Expected a different code.");
                 }
-            };
-            const event: AuthRequest = {
-                code: "1234"
             };
 
             const response = await handler.handleApiGatewayEvent({
                 headers: null,
                 path: null,
-                queryStringParameters: {auth: true},
-                body: JSON.stringify(event)
+                queryStringParameters: {auth: true, code: "1234"},
+                body: null
             });
 
             expect(response).to.eql({
@@ -118,20 +114,17 @@ describe("EventHandler", () => {
             };
             handler.requestVerifier = verifier;
             handler.authService = authService;
-            authService.authorizeTeam = async (authRequest) => {
-                if(authRequest.code != "1235") {
+            authService.authorizeTeam = async (code) => {
+                if(code != "1235") {
                     throw new Error("Expected a different code.");
                 }
-            };
-            const event: AuthRequest = {
-                code: "1234"
             };
 
             const response = await handler.handleApiGatewayEvent({
                 headers: null,
                 path: null,
-                queryStringParameters: {auth: true},
-                body: JSON.stringify(event)
+                queryStringParameters: {auth: true, code: "1234"},
+                body: null
             });
 
             expect(response).to.eql({

@@ -51,7 +51,7 @@ describe('OAuthService', function () {
                 }) as AxiosPromise;
             };
 
-            await authService.authorizeTeam({code: "1234"});
+            await authService.authorizeTeam("1234");
             const resultingToken = await authService.getTeamToken("newTeam");
             token._id = resultingToken._id;
 
@@ -74,7 +74,7 @@ describe('OAuthService', function () {
                 }) as AxiosPromise;
             };
 
-            await authService.authorizeTeam({code: "1234"});
+            await authService.authorizeTeam("1234");
             const resultingToken = await authService.getTeamToken("firstTeam");
             token._id = resultingToken._id;
 
@@ -90,7 +90,7 @@ describe('OAuthService', function () {
                 throw new Error("Oh no!");
             };
 
-            const authPromise =  authService.authorizeTeam({code: "1234"});
+            const authPromise =  authService.authorizeTeam( "1234");
             await expect(authPromise).to.be.rejectedWith(Error);
         });
     });
@@ -145,13 +145,3 @@ describe('OAuthService', function () {
     });
 
 });
-
-function mockOauthResponse(config: AxiosRequestConfig): AxiosPromise {
-    return Promise.resolve({
-        data: {data: "foo"},
-        status: 200,
-        statusText: "OK",
-        headers: null,
-        config: config
-    });
-}
