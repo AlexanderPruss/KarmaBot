@@ -20,7 +20,7 @@ export class KarmaService {
         logger.info(`Finding karma with name ${name}.`);
 
         const db = await this.mongoConnector.reconnectAndGetDb();
-        const foundKarma: Karma[] = await db.collection(`karma${teamId}`).find({name: {$eq: name}}).toArray();
+        const foundKarma: Karma[] = await db.collection(this.getCollection(teamId)).find({name: {$eq: name}}).toArray();
 
         if (foundKarma.length == 0) {
             logger.warn(`Couldn't find karma with name ${name}.`);
@@ -40,7 +40,7 @@ export class KarmaService {
         logger.info(`Updating karma of ${karma.name}`);
         const db = await this.mongoConnector.reconnectAndGetDb();
 
-        await db.collection(`karma${teamId}`).findOneAndUpdate(
+        await db.collection(this.getCollection(teamId)).findOneAndUpdate(
             {name: karma.name},
             {
                 $set: {name: karma.name},
@@ -62,7 +62,7 @@ export class KarmaService {
             return new KarmaNeighbors(null, null, null);
         }
 
-        const nextHighest = await db.collection(`karma${teamId}`).aggregate([
+        const nextHighest = await db.collection(this.getCollection(teamId)).aggregate([
             {
                 $match: {value: {$gt: targetKarma.value}}
             },
@@ -82,7 +82,7 @@ export class KarmaService {
                 $limit: 1
             }]
         ).toArray();
-        const nextLowest = await db.collection(`karma${teamId}`).aggregate([
+        const nextLowest = await db.collection(this.getCollection(teamId)).aggregate([
             {
                 $match: {value: {$lt: targetKarma.value}}
             },
@@ -113,6 +113,11 @@ export class KarmaService {
 
     //TODO: Hmm. Do I want to somehow handle multiple names having the same karma?
     //TODO: ... how about just count how many other things with that same karma there are?
+
+    private getCollection(teamId: string) {
+        return `karma${teamId}`;
+    }
+
 }
 
 export default new KarmaService();

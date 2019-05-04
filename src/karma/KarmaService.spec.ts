@@ -29,7 +29,8 @@ describe('KarmaService', function () {
         mongoConnector.config = mongoConfig;
 
         for (const karma of testData) {
-            await testDb.saveDocument({...karma}, "karma");
+            await testDb.saveDocument({...karma}, "karmaTeamOne");
+            await testDb.saveDocument({...karma}, "karmaTeamTwo");
         }
     });
 
@@ -43,13 +44,13 @@ describe('KarmaService', function () {
         it('finds a karma by name', async function () {
             const expectedKarma: Karma = {name: "karmabot", value: 9};
 
-            const karma = await karmaService.findKarma("karmabot");
+            const karma = await karmaService.findKarma("karmabot", "TeamOne");
 
             expect(karma).to.eql(expectedKarma);
         });
 
         it('returns null if a karma can\'t be found', async function () {
-            const karma = await karmaService.findKarma("some other dumb bot");
+            const karma = await karmaService.findKarma("some other dumb bot", "TeamOne");
 
             expect(karma).to.be.null;
         });
@@ -61,7 +62,7 @@ describe('KarmaService', function () {
         it('updates the value of an existing karma', async function () {
             const expectedKarma: Karma = {name: "stuff", value: 1};
 
-            const karma = await karmaService.updateKarma(expectedKarma);
+            const karma = await karmaService.updateKarma(expectedKarma, "TeamOne");
 
             expect(karma).to.eql(expectedKarma);
         });
@@ -69,7 +70,7 @@ describe('KarmaService', function () {
         it('upserts non-existing karmas', async function () {
             const expectedKarma: Karma = {name: "nonexisting stuff", value: 1};
 
-            const karma = await karmaService.updateKarma(expectedKarma);
+            const karma = await karmaService.updateKarma(expectedKarma, "TeamOne");
 
             expect(karma).to.eql(expectedKarma);
         });
@@ -85,7 +86,7 @@ describe('KarmaService', function () {
                 nextKarma: {name: "dogs", value: 1000}
             };
 
-            const karmaNeighbors = await karmaService.getKarmaNeighbors("cats");
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("cats", "TeamOne");
 
             expect(karmaNeighbors).to.eql(expectedNeighbors);
         });
@@ -97,7 +98,7 @@ describe('KarmaService', function () {
                 karma: {name: "dogs", value: 1000}
             };
 
-            const karmaNeighbors = await karmaService.getKarmaNeighbors("dogs");
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("dogs", "TeamOne");
 
             expect(karmaNeighbors).to.eql(expectedNeighbors);
         });
@@ -109,7 +110,7 @@ describe('KarmaService', function () {
                 nextKarma: {name: "bar", value: -900}
             };
 
-            const karmaNeighbors = await karmaService.getKarmaNeighbors("foo");
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("foo", "TeamOne");
 
             expect(karmaNeighbors).to.eql(expectedNeighbors);
         });
@@ -121,7 +122,7 @@ describe('KarmaService', function () {
                 nextKarma: null
             };
 
-            const karmaNeighbors = await karmaService.getKarmaNeighbors("invisible cats");
+            const karmaNeighbors = await karmaService.getKarmaNeighbors("invisible cats", "TeamOne");
 
             expect(karmaNeighbors).to.eql(expectedNeighbors);
         });

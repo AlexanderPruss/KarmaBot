@@ -6,7 +6,7 @@ import {TeamAuthToken} from "../oauth/TeamAuthToken";
 
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
- * but also with Slack Event API challenges - see https://api.slack.com/events/url_verification.
+ * but also with Slack Event API challenges and auth0- see https://api.slack.com/events/url_verification.
  */
 export class EventHandler {
 
@@ -27,7 +27,16 @@ export class EventHandler {
         const body = JSON.parse(event.body);
 
         if(event.path == "auth") {
-            await authService.authorizeTeam(body);
+            try {
+                await this.authService.authorizeTeam(body);
+            } catch (error) {
+                logger.error("Failed to authorize with auth0.", error);
+                return {
+                    statusCode: 403,
+                    isBase64Encoded: false,
+                    body: "Unauthorized"
+                }
+            }
             return {
                 statusCode: 200,
                 isBase64Encoded: false,
@@ -48,7 +57,7 @@ export class EventHandler {
         //Else, respond immediately with a 200 (as requested by the Slack Event API.)
         //Do the work of processing the event in a separate thread.
         const slackEvent: IncomingSlackEvent = body;
-        const token : TeamAuthToken = await authService.getTeamToken(slackEvent.team_id);
+        const token : TeamAuthToken = await this.authService.getTeamToken(slackEvent.team_id);
         if (slackEvent.event == null || slackEvent.event.text == null || slackEvent.event.channel == null) {
             logger.warn("Didn't receive a valid event.");
             return {

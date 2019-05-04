@@ -5,6 +5,7 @@ import {KarmaService} from "./KarmaService";
 import {expect} from 'chai';
 import {KarmaUpdateHandler} from "./KarmaUpdateHandler";
 import {EventService} from "../events/EventService";
+import {TeamAuthToken} from "../oauth/TeamAuthToken";
 
 describe('KarmaUpdateHandler', function () {
 
@@ -30,7 +31,7 @@ describe('KarmaUpdateHandler', function () {
         mongoConnector.config = mongoConfig;
 
         for (const karma of testData) {
-            await testDb.saveDocument({...karma}, "karma");
+            await testDb.saveDocument({...karma}, "karmaTeamOne");
         }
     });
 
@@ -43,26 +44,37 @@ describe('KarmaUpdateHandler', function () {
         it('should parse the message, find karma requests, and execute updates', async function () {
             let resultingMessage: string = null;
             let resultingChannel: string = null;
-            eventService.respondWithMessage = async (message, channel) => {
+            let resultingToken: string = null;
+            eventService.respondWithMessage = async (message, channel, token) => {
                 resultingChannel = channel;
                 resultingMessage = message;
+                resultingToken = token.bot_access_token;
             };
 
+            const token = new TeamAuthToken();
+            token.team_id = "TeamOne";
+            token.bot = {
+              bot_access_token : "BotAccess",
+              bot_user_id: "karmabot"
+            };
             await handler.handleEvent({
                 channel: "TV 1234",
                 text: "stuff++ dumbthings-- hotdogs foo"
-            });
-            const stuffKarma = await karmaService.findKarma("Stuff");
-            const hotdogsKarma = await karmaService.findKarma("Hotdogs");
-            const karmabotKarma = await karmaService.findKarma("Karmabot");
-            const fooKarma = await karmaService.findKarma("Foo");
-            const dumbthingsKarma = await karmaService.findKarma("Dumbthings");
+            },
+                token
+            );
+            const stuffKarma = await karmaService.findKarma("Stuff", "TeamOne");
+            const hotdogsKarma = await karmaService.findKarma("Hotdogs", "TeamOne");
+            const karmabotKarma = await karmaService.findKarma("Karmabot", "TeamOne");
+            const fooKarma = await karmaService.findKarma("Foo", "TeamOne");
+            const dumbthingsKarma = await karmaService.findKarma("Dumbthings", "TeamOne");
 
-            expect(resultingMessage).to.eql(
+           expect(resultingMessage).to.eql(
                 `Stuff now has 1 karma. Hotdogs has the next highest karma, with 2 karma. Dumbthings has the next lowest karma, with -1 karma.
 -----
 Dumbthings now has -1 karma. Stuff has the next highest karma, with 1 karma.`);
             expect(resultingChannel).to.eql("TV 1234");
+            expect(resultingToken).to.eql("BotAccess");
             expect(stuffKarma.value).to.eql(1);
             expect(hotdogsKarma.value).to.eql(2);
             expect(karmabotKarma.value).to.eql(9);

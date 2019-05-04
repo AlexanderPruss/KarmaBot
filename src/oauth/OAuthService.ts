@@ -9,7 +9,7 @@ export class OAuthService {
     mongoConnector: MongoConnector = defaultMongoConnector;
     slackConfig: SlackConfig = defaultSlackConfig;
 
-    async authorizeTeam(authRequest: AuthRequest) : Promise<TeamAuthToken> {
+    async authorizeTeam(authRequest: AuthRequest) {
         logger.info("Authenticating with slack.");
         const authResponse = await axios.post("https://slack.com/api/oauth.access",
             {
@@ -24,7 +24,6 @@ export class OAuthService {
 
         const token: TeamAuthToken = authResponse.data;
         await this.saveTeamToken(token);
-        return token;
     }
 
     async saveTeamToken(token: TeamAuthToken) {
