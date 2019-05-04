@@ -23,10 +23,10 @@ export class EventHandler {
             }
         }
 
-        logger.info(`Path: ${event.path}`);
+        logger.info("Query Parameters: " + event.queryStringParameters);
         const body = JSON.parse(event.body);
 
-        if(event.path == "auth") {
+        if(event.queryStringParameters != null && event.queryStringParameters["auth"] != null) {
             logger.info("Authorizing with auth0");
             try {
                 await this.authService.authorizeTeam(body);
@@ -84,6 +84,7 @@ export class APIGatewayEvent {
     body: string;
     headers: any;
     path: string;
+    queryStringParameters: any;
 }
 
 export class APIGatewayOutput {

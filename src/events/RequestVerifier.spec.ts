@@ -63,6 +63,7 @@ describe("RequestVerifier", () => {
             const goodEarlyVerification = requestVerifier.verifyEvent({
                 body: "foo",
                 path: "any",
+                queryStringParameters: null,
                 headers: {
                     "X-Slack-Signature": getSignatureOfFoo(fourMinutesEarlier),
                     "X-Slack-Request-Timestamp": fourMinutesEarlier
