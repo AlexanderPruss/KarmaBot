@@ -38,7 +38,6 @@ export class KarmaUpdateHandler {
 
    private async toResponseMessage(updatedKarma: Karma, teamId: string): Promise<string> {
         const karmaNeighbors = await this.karmaService.getKarmaNeighbors(updatedKarma.name, teamId);
-        console.log(karmaNeighbors);
         let message = `${karmaNeighbors.karma.name} now has ${karmaNeighbors.karma.value} karma.`;
         if (karmaNeighbors.nextKarma != null) {
             message += ` ${karmaNeighbors.nextKarma.name} has the next highest karma, with ${karmaNeighbors.nextKarma.value} karma.`

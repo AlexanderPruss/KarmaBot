@@ -27,6 +27,7 @@ export class EventHandler {
         const body = JSON.parse(event.body);
 
         if(event.path == "auth") {
+            logger.info("Authorizing with auth0");
             try {
                 await this.authService.authorizeTeam(body);
             } catch (error) {

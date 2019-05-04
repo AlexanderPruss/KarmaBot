@@ -73,31 +73,6 @@ describe("EventHandler", () => {
             });
         });
 
-        it('returns a 401 if the slack event is malformed', async function () {
-            const handler = new EventHandler();
-            const verifier = new RequestVerifier();
-            verifier.verifyEvent = () => {
-                return true
-            };
-            handler.requestVerifier = verifier;
-            const event: IncomingSlackEvent = {
-                team_id: "TeamOne",
-                event: null
-            };
-
-            const response = await handler.handleApiGatewayEvent({
-                headers: null,
-                path: null,
-                body: JSON.stringify(event)
-            });
-
-            expect(response).to.eql({
-                statusCode: 401,
-                isBase64Encoded: false,
-                body: "Couldn't parse slack event."
-            });
-        });
-
         it('writes an auth token if the path matches', async function () {
             const handler = new EventHandler();
             const verifier = new RequestVerifier();
@@ -106,6 +81,7 @@ describe("EventHandler", () => {
                 return true
             };
             handler.requestVerifier = verifier;
+            handler.authService = authService;
             authService.authorizeTeam = async (authRequest) => {
                 if(authRequest.code != "1234") {
                     throw new Error("Expected a different code.");
