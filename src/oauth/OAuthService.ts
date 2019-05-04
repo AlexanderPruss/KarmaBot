@@ -11,10 +11,7 @@ export class OAuthService {
 
     async authorizeTeam(code: string) {
         logger.info("Authenticating with slack.");
-        const authResponse = await this.axios.post("https://slack.com/api/oauth.access",
-            {
-                code: code
-            },
+        const authResponse = await this.axios.get(`https://slack.com/api/oauth.access?code=${code}`,
             {
                 auth: {
                     username: this.slackConfig.clientId,
@@ -23,7 +20,6 @@ export class OAuthService {
             });
         if(authResponse.status != 200 || authResponse.data.team_id == null) {
             logger.error("Failed to authenticate with auth0: " + authResponse.statusText);
-            logger.error("Failure response: " + authResponse.data);
             throw new Error("Failed to authenticate with auth0")
         }
 

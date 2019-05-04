@@ -5,7 +5,7 @@ import {expect} from 'chai';
 import {OAuthService} from "./OAuthService";
 import {TeamAuthToken} from "./TeamAuthToken";
 import {defaultTeamAuthToken} from "./test-helpers/TeamAuthTokenProvider.spec";
-import {AxiosPromise, AxiosRequestConfig} from "axios";
+import {AxiosPromise} from "axios";
 import * as chaiAsPromised from "chai-as-promised";
 
 describe('OAuthService', function () {
@@ -41,7 +41,7 @@ describe('OAuthService', function () {
             const token = defaultTeamAuthToken("newTeam");
 
             authService.mongoConnector = mongoConnector;
-            authService.axios.post = (data, config) => {
+            authService.axios.get = (config) => {
                 return Promise.resolve({
                     data: token,
                     status: 200,
@@ -64,7 +64,7 @@ describe('OAuthService', function () {
             token.scope = "brand new scope";
 
             authService.mongoConnector = mongoConnector;
-            authService.axios.post = (data, config) => {
+            authService.axios.get = (config) => {
                 return Promise.resolve({
                     data: token,
                     status: 200,
@@ -86,7 +86,7 @@ describe('OAuthService', function () {
             const token = defaultTeamAuthToken("explodey team");
 
             authService.mongoConnector = mongoConnector;
-            authService.axios.post = (data, config) => {
+            authService.axios.get = (config) => {
                 throw new Error("Oh no!");
             };
 
