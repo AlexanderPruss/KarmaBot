@@ -12,13 +12,15 @@ export class KarmaService {
 
     /**
      * Returns the karma with the given name, or null if no such karma can be found.
+     * Karma for each team is stored in a separate collection.
      * @param name
+     * @param teamId
      */
-    async findKarma(name: string): Promise<Karma> {
+    async findKarma(name: string, teamId: string): Promise<Karma> {
         logger.info(`Finding karma with name ${name}.`);
 
         const db = await this.mongoConnector.reconnectAndGetDb();
-        const foundKarma: Karma[] = await db.collection("karma").find({name: {$eq: name}}).toArray();
+        const foundKarma: Karma[] = await db.collection(`karma${teamId}`).find({name: {$eq: name}}).toArray();
 
         if (foundKarma.length == 0) {
             logger.warn(`Couldn't find karma with name ${name}.`);
@@ -34,11 +36,11 @@ export class KarmaService {
         return {name: foundKarma[0].name, value: foundKarma[0].value};
     }
 
-    async updateKarma(karma: Karma): Promise<Karma> {
+    async updateKarma(karma: Karma, teamId: string): Promise<Karma> {
         logger.info(`Updating karma of ${karma.name}`);
         const db = await this.mongoConnector.reconnectAndGetDb();
 
-        await db.collection("karma").findOneAndUpdate(
+        await db.collection(`karma${teamId}`).findOneAndUpdate(
             {name: karma.name},
             {
                 $set: {name: karma.name},
@@ -46,21 +48,21 @@ export class KarmaService {
             },
             {upsert: true});
 
-        return this.findKarma(karma.name);
+        return this.findKarma(karma.name, teamId);
     }
 
     /**
      * Finds the karma of the given name, as well as its neighbors.
      */
-    async getKarmaNeighbors(name: string): Promise<KarmaNeighbors> {
+    async getKarmaNeighbors(name: string, teamId: string): Promise<KarmaNeighbors> {
         logger.info(`Finding karma neighbors for ${name}`);
         const db = await this.mongoConnector.reconnectAndGetDb();
-        const targetKarma = await this.findKarma(name);
+        const targetKarma = await this.findKarma(name, teamId);
         if (targetKarma == null) {
             return new KarmaNeighbors(null, null, null);
         }
 
-        const nextHighest = await db.collection("karma").aggregate([
+        const nextHighest = await db.collection(`karma${teamId}`).aggregate([
             {
                 $match: {value: {$gt: targetKarma.value}}
             },
@@ -80,7 +82,7 @@ export class KarmaService {
                 $limit: 1
             }]
         ).toArray();
-        const nextLowest = await db.collection("karma").aggregate([
+        const nextLowest = await db.collection(`karma${teamId}`).aggregate([
             {
                 $match: {value: {$lt: targetKarma.value}}
             },
