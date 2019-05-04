@@ -3,9 +3,6 @@ import slackConfig, {SlackConfig} from "./SlackConfig";
 import logger from "../logging/Logger";
 import {BotToken} from "../oauth/TeamAuthToken";
 
-/**
- * The event service is the orchestrator of the app. It sends event information onto each handler.
- */
 export class EventService {
 
     config: SlackConfig = slackConfig;

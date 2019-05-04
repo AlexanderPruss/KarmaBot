@@ -5,7 +5,7 @@
 import {ObjectID} from "bson";
 
 export class TeamAuthToken {
-    _id : ObjectID
+    _id : ObjectID;
     access_token: string;
     scope: string;
     team_name: string;

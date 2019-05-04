@@ -2,16 +2,17 @@ import defaultMongoConnector, {MongoConnector} from "../storage/MongoConnector";
 import defaultSlackConfig, {SlackConfig} from "../events/SlackConfig";
 import {AuthRequest} from "./AuthRequest";
 import logger from "../logging/Logger";
-import axios from "axios";
+import axios, {AxiosInstance} from "axios";
 import {TeamAuthToken} from "./TeamAuthToken";
 
 export class OAuthService {
     mongoConnector: MongoConnector = defaultMongoConnector;
     slackConfig: SlackConfig = defaultSlackConfig;
+    axios: AxiosInstance = axios.create();
 
     async authorizeTeam(authRequest: AuthRequest) {
         logger.info("Authenticating with slack.");
-        const authResponse = await axios.post("https://slack.com/api/oauth.access",
+        const authResponse = await this.axios.post("https://slack.com/api/oauth.access",
             {
                 code: authRequest.code
             },
