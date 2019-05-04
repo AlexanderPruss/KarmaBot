@@ -7,6 +7,9 @@ import {TeamAuthToken} from "../oauth/TeamAuthToken";
 /**
  * Routes incoming Slack events. Due to how the Slack API works, this router has to deal with not just "real" events,
  * but also with Slack Event API challenges and auth0- see https://api.slack.com/events/url_verification.
+ *
+ * Apparently, Slack request verification will fail for Slack auth0 requests. So we only do request verification
+ * for non-auth0 requests
  */
 export class EventHandler {
 
@@ -15,27 +18,16 @@ export class EventHandler {
     requestVerifier: RequestVerifier = requestVerifier;
 
     public async handleApiGatewayEvent(event: APIGatewayEvent): Promise<APIGatewayOutput> {
-        if (!this.requestVerifier.verifyEvent(event)) {
-            return {
-                statusCode: 403,
-                isBase64Encoded: false,
-                body: "Unauthorized"
-            }
-        }
-
-        logger.info("Query Parameters: " + event.queryStringParameters);
-        const body = JSON.parse(event.body);
-
         if(event.queryStringParameters != null && event.queryStringParameters["auth"] != null) {
             logger.info("Authorizing with auth0");
             try {
-                await this.authService.authorizeTeam(body);
+                await this.authService.authorizeTeam(JSON.parse(event.body));
             } catch (error) {
                 logger.error("Failed to authorize with auth0.", error);
                 return {
                     statusCode: 403,
                     isBase64Encoded: false,
-                    body: "Unauthorized"
+                    body: "Unauthorized - failed auth0 check"
                 }
             }
             return {
@@ -44,6 +36,19 @@ export class EventHandler {
                 body: "Authorization successful"
             }
         }
+
+        if (!this.requestVerifier.verifyEvent(event)) {
+            return {
+                statusCode: 403,
+                isBase64Encoded: false,
+                body: "Unauthorized - failed verification"
+            }
+        }
+
+        logger.info("Query Parameters: " + event.queryStringParameters);
+        const body = JSON.parse(event.body);
+
+
 
         //If this is a slack challenge, answer with the challenge value.
         if (body.challenge != null) {

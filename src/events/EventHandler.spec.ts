@@ -1,4 +1,4 @@
-import {EventData, EventHandler, IncomingSlackEvent} from "./EventHandler";
+import {APIGatewayEvent, EventData, EventHandler, IncomingSlackEvent} from "./EventHandler";
 import {RequestVerifier} from "./RequestVerifier";
 import {expect} from "chai";
 import {KarmaUpdateHandler} from "../karma/KarmaUpdateHandler";
@@ -18,12 +18,12 @@ describe("EventHandler", () => {
             };
             handler.requestVerifier = verifier;
 
-            const response = await handler.handleApiGatewayEvent(null);
+            const response = await handler.handleApiGatewayEvent(new APIGatewayEvent());
 
             expect(response).to.eql({
                 statusCode: 403,
                 isBase64Encoded: false,
-                body: "Unauthorized"
+                body: "Unauthorized - failed verification"
             });
         });
 
@@ -137,7 +137,7 @@ describe("EventHandler", () => {
             expect(response).to.eql({
                 statusCode: 403,
                 isBase64Encoded: false,
-                body: "Unauthorized"
+                body: "Unauthorized - failed auth0 check"
             });
         });
 
