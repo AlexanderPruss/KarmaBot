@@ -2,12 +2,11 @@
 
 Karmabot is a slack bot that helps you keep track of how awesome things are. 
 
-# Still a work in progress! 
+## Easy Installation
 
-Karma increasing and decreasing works, but leaderboards are not yet implemented.
+Click the button!
 
-The biggest features coming are a distribution as a Slack app (so you don't have to run everything yourself) 
-and Terraform/Docker/K8s files in the `infrastructure` folder (so it's easy to run yourself if you want). 
+<a href="https://slack.com/oauth/authorize?client_id=496346185462.494344275745&scope=bot"><img alt="Add Karmabot to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"></a>
 
 ## Usage
 
@@ -23,29 +22,16 @@ increment or decrement up to five points at a time.
   - Ex: `monday----` -> Monday now has three less points.
 - Messages containing the phrase `!leaderboard` will have Karmabot reply with the current top 5 karma holders.
 
-Feel free to suggest more features.
+Feel free to suggest more features as GitHub issues.
 
-## Installing Karmabot to Slack
+## Legal Stuff
 
-I'll distribute Karmabot over Slack later (read - once a first version is working). Until then, if you want to use Karmabot, 
-get the app running and add a bot user with the `app_mention` and `message.im` event 
-subscriptions. See [Slack's bot guide](https://api.slack.com/bot-users) for more details.
-
-## Configuration
-
-Karmabot uses the [`config` npm package](https://www.npmjs.com/package/config). The `config/default.json` folder contains a list of configuration 
-variables that you'll need to set to get Karmabot running. You can add your own values in a `config/dev.json` 
-or `config/production.json` file and start Karmabot with the appropriate `npm` task, or just set the 
-right value of `NODE_ENV` in your terminal/vm/container.
-
-## Stack
-
-* Node
-* Koa 
-* Mongo - will add additional DB connectors for hipper databases later.
+Karmabot is a glorified key-value store. Please don't store personal information in Karmabot. I'm not sure how you would, 
+but please don't use Karmabot to break laws or do immoral things.
 
 ## Infrastructure
 
-WIP - the `infastructure` folder contains some sample k8s deployment yamls you can
-use to setup a cluster, as well as a terraform configuration for creating the required 
-resources in AWS.
+Karmabot deploys to AWS Lambda and is accessed through API Gateway. It uses a MongoDB database hosted in Mongo Cloud Atlas,
+for the simple reason that they gave me a 200$ voucher at a conference.
+
+I might add some CloudFormation templates at some point to help anyone wanting to copy my infrastructure setup.

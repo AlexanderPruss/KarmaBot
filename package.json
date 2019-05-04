@@ -2,7 +2,10 @@
   "name": "karmabot",
   "version": "1.0.0",
   "description": "Slack chat bot that keeps track of how awesome things are.",
-  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:AlexanderPruss/KarmaBot.git"
+  },
   "scripts": {
     "build": "tsc",
     "test": "tsc && mocha dist/**/*.spec.js --exit",
