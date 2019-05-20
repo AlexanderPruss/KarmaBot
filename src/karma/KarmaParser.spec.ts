@@ -94,7 +94,7 @@ describe("KarmaParser", () => {
             expect(karmaRequests[0]).to.eql(expectedRequest);
         });
 
-        it("handles the user reference strings correctly", () => {
+        it("wraps user reference string in < > symbols", () => {
             const expectedRequest = new Karma("<@abc123>", 1);
 
             const karmaRequests = parser.parseMessage("@Karmabot @abc123++");

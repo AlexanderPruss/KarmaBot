@@ -31,7 +31,7 @@ export class KarmaParser {
      * minus one. That way `++` results in a single incrementation.
      *
      * We also want to check if the word is a user reference and if so format it accordingly. Slack makes it
-     * easy for us, as it automatically changes the user display name to the user id before passing it ot the bot.
+     * easy for us, as it automatically changes the user display name to the user id before passing it to the bot.
      * I. e. "@JohnDoe" becomes "@abc123"
      *
      * Ex:
@@ -43,8 +43,6 @@ export class KarmaParser {
      */
     private parseWord(word: string): Karma {
         let activeSymbol: string = null;
-
-        const firstCharacter = word.charAt(0);
 
         //If the word doesn't end in a + or -, skip it.
         const lastCharacter = word.charAt(word.length - 1);
@@ -74,7 +72,8 @@ export class KarmaParser {
             requestedChange *= -1;
         }
 
-        if (firstCharacter === USER_DESIGNATOR) {
+        // Escape sequence required by slack client to parse the user reference
+        if (word.charAt(0) === USER_DESIGNATOR) {
             karmaSubject = `<${karmaSubject}>`;
         }
 
