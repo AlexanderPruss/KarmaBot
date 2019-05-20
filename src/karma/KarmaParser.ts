@@ -2,6 +2,7 @@ import {Karma} from "./Karma";
 
 const INCREMENTER = "+";
 const DECREMENTER = "-";
+const USER_DESIGNATOR = "@";
 
 //Parses a message sent to the bot and translates it into a collection of Karma requests.
 export class KarmaParser {
@@ -29,6 +30,10 @@ export class KarmaParser {
      * at least two long. The amount to increment/decrement is equal to the number of incrementers/decrementers
      * minus one. That way `++` results in a single incrementation.
      *
+     * We also want to check if the word is a user reference and if so format it accordingly. Slack makes it
+     * easy for us, as it automatically changes the user display name to the user id before passing it to the bot.
+     * I. e. "@JohnDoe" becomes "@abc123"
+     *
      * Ex:
      *  C++ -> increment C by one
      *  Dog+++ -> increment Dog by two
@@ -41,6 +46,7 @@ export class KarmaParser {
 
         //If the word doesn't end in a + or -, skip it.
         const lastCharacter = word.charAt(word.length - 1);
+
         if (lastCharacter == INCREMENTER) {
             activeSymbol = INCREMENTER;
         } else if (lastCharacter == DECREMENTER) {
@@ -64,6 +70,11 @@ export class KarmaParser {
 
         if (activeSymbol == DECREMENTER) {
             requestedChange *= -1;
+        }
+
+        // Escape sequence required by slack client to parse the user reference
+        if (word.charAt(0) === USER_DESIGNATOR) {
+            karmaSubject = `<${karmaSubject}>`;
         }
 
         return new Karma(karmaSubject, requestedChange);

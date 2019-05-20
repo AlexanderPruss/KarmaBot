@@ -93,6 +93,15 @@ describe("KarmaParser", () => {
             expect(karmaRequests.length).to.equal(1);
             expect(karmaRequests[0]).to.eql(expectedRequest);
         });
+
+        it("wraps user reference string in < > symbols", () => {
+            const expectedRequest = new Karma("<@abc123>", 1);
+
+            const karmaRequests = parser.parseMessage("@Karmabot @abc123++");
+
+            expect(karmaRequests.length).to.equal(1);
+            expect(karmaRequests[0]).to.eql(expectedRequest);
+        });
     });
 
     describe("#prettifyKarmaRequests", () => {
