@@ -2,14 +2,14 @@ import {Karma} from "./Karma";
 
 const INCREMENTER = "+";
 const DECREMENTER = "-";
-const USER_DESIGNATOR = "@";
+const ID_PREFIX = "<";
 
 //Parses a message sent to the bot and translates it into a collection of Karma requests.
 export class KarmaParser {
 
     public parseMessage(message: string): Karma[] {
         const karmaRequests = [];
-        message = message.toLowerCase();
+        //TODO: nope  message = message.toLowerCase();
 
         message.split(" ").forEach((word) => {
 
@@ -72,11 +72,6 @@ export class KarmaParser {
             requestedChange *= -1;
         }
 
-        // Escape sequence required by slack client to parse the user reference
-        if (word.charAt(0) === USER_DESIGNATOR) {
-            karmaSubject = `<${karmaSubject}>`;
-        }
-
         return new Karma(karmaSubject, requestedChange);
     }
 
@@ -89,10 +84,13 @@ export class KarmaParser {
     private prettifyKarmaRequests(requests: Karma[]): Karma[] {
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
-            const karmaSubject = request.name;
 
-            //Capitalized karma looks pretty
-            request.name = karmaSubject.charAt(0).toUpperCase() + karmaSubject.slice(1);
+            //Capitalized karma looks pretty. We don't change the capitalization if it's an ID request, however, as
+            //that would break the ID reference
+            if (request.name.charAt(0) != ID_PREFIX) {
+                request.name = request.name.toLowerCase();
+                request.name = request.name.charAt(0).toUpperCase() + request.name.slice(1);
+            }
 
             //Pia can't lose points.
             if (request.name === "Pia" && request.value < 0) {

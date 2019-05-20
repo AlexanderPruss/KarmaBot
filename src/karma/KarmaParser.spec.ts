@@ -94,14 +94,6 @@ describe("KarmaParser", () => {
             expect(karmaRequests[0]).to.eql(expectedRequest);
         });
 
-        it("wraps user reference string in < > symbols", () => {
-            const expectedRequest = new Karma("<@abc123>", 1);
-
-            const karmaRequests = parser.parseMessage("@Karmabot @abc123++");
-
-            expect(karmaRequests.length).to.equal(1);
-            expect(karmaRequests[0]).to.eql(expectedRequest);
-        });
     });
 
     describe("#prettifyKarmaRequests", () => {
@@ -109,6 +101,15 @@ describe("KarmaParser", () => {
             const expectedRequest = new Karma("Foo", -3);
 
             const karmaRequests = parser.parseMessage("@Karmabot fOO----");
+
+            expect(karmaRequests.length).to.equal(1);
+            expect(karmaRequests[0]).to.eql(expectedRequest);
+        });
+
+        it("doesn't change the capitalization of slack IDs", () => {
+            const expectedRequest = new Karma("<@wowSoCapitalized>", -3);
+
+            const karmaRequests = parser.parseMessage("@Karmabot <@wowSoCapitalized>----");
 
             expect(karmaRequests.length).to.equal(1);
             expect(karmaRequests[0]).to.eql(expectedRequest);
