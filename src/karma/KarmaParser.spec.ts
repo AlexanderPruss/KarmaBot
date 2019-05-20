@@ -106,6 +106,15 @@ describe("KarmaParser", () => {
             expect(karmaRequests[0]).to.eql(expectedRequest);
         });
 
+        it("doesn't change the capitalization of slack IDs", () => {
+            const expectedRequest = new Karma("<@wowSoCapitalized>", -3);
+
+            const karmaRequests = parser.parseMessage("@Karmabot <@wowSoCapitalized>----");
+
+            expect(karmaRequests.length).to.equal(1);
+            expect(karmaRequests[0]).to.eql(expectedRequest);
+        });
+
         //TODO: Should I do it per word, or per request? Hmm.
         it("Prevents changing more than five karma in one single word", () => {
             const expectedRequests = [
