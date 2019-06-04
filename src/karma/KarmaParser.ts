@@ -9,7 +9,6 @@ export class KarmaParser {
 
     public parseMessage(message: string): Karma[] {
         const karmaRequests = [];
-        //TODO: nope  message = message.toLowerCase();
 
         message.split(" ").forEach((word) => {
 
