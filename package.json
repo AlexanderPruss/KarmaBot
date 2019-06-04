@@ -1,6 +1,6 @@
 {
   "name": "karmabot",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Slack chat bot that keeps track of how awesome things are.",
   "repository": {
     "type": "git",
