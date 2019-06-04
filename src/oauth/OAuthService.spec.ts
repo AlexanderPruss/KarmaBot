@@ -5,7 +5,6 @@ import {expect} from 'chai';
 import {OAuthService} from "./OAuthService";
 import {TeamAuthToken} from "./TeamAuthToken";
 import {defaultTeamAuthToken} from "./test-helpers/TeamAuthTokenProvider.spec";
-import {AxiosPromise} from "axios";
 import * as chaiAsPromised from "chai-as-promised";
 
 describe('OAuthService', function () {
@@ -42,13 +41,14 @@ describe('OAuthService', function () {
 
             authService.mongoConnector = mongoConnector;
             authService.axios.get = (config) => {
-                return Promise.resolve({
+                const promise: Promise<any> = Promise.resolve({
                     data: token,
                     status: 200,
                     statusText: "OK",
                     headers: null,
                     config: config
-                }) as AxiosPromise;
+                });
+                return promise;
             };
 
             await authService.authorizeTeam("1234");
@@ -65,13 +65,14 @@ describe('OAuthService', function () {
 
             authService.mongoConnector = mongoConnector;
             authService.axios.get = (config) => {
-                return Promise.resolve({
+                const promise: Promise<any> = Promise.resolve({
                     data: token,
                     status: 200,
                     statusText: "OK",
                     headers: null,
                     config: config
-                }) as AxiosPromise;
+                });
+                return promise;
             };
 
             await authService.authorizeTeam("1234");
@@ -90,7 +91,7 @@ describe('OAuthService', function () {
                 throw new Error("Oh no!");
             };
 
-            const authPromise =  authService.authorizeTeam( "1234");
+            const authPromise = authService.authorizeTeam("1234");
             await expect(authPromise).to.be.rejectedWith(Error);
         });
     });
