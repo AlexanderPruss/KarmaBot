@@ -66,10 +66,8 @@ jobs:
           working_directory: karmabotdeployment
       - run: mv karmabotdeployment.zip deploymentworkspace/karmabotdeployment.zip
 
-      - run: "npm version | grep karmabot"
-      - run: "npm version | grep karmabot | sed \"s/{ karmabot: '//\""
-      - run: "npm version | grep karmabot | sed \"s/{ karmabot: '//\" | sed \"s/',//\""
       - run: "npm version | grep karmabot | sed \"s/{ karmabot: '//\" | sed \"s/',//\" > deploymentworkspace/version"
+      - run: "cat deploymentworkspace/version"
 
       - persist_to_workspace:
           root: deploymentworkspace
@@ -85,6 +83,6 @@ jobs:
           at: deploymentworkspace
       - run: ls deploymentworkspace
       - run: sudo pip install awscli
-      - run: cat version
-      - run: aws s3 cp deploymentworkspace/karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment-$(cat version).zip
-      - run: aws lambda update-function-code --function-name karmabotRespondToSlack --s3-bucket karmabotdeployment --s3-key karmabotdeployment-$(cat version).zip --region eu-central-1
+      - run: cat deploymentworkspace/version
+      - run: aws s3 cp deploymentworkspace/karmabotdeployment.zip s3://karmabotdeployment/karmabotdeployment-$(cat deploymentworkspace/version).zip
+      - run: aws lambda update-function-code --function-name karmabotRespondToSlack --s3-bucket karmabotdeployment --s3-key karmabotdeployment-$(cat deploymentworkspace/version).zip --region eu-central-1
