@@ -65,7 +65,7 @@ jobs:
           command: zip -r ../karmabotdeployment.zip ./*
           working_directory: karmabotdeployment
       - run: mv karmabotdeployment.zip deploymentworkspace/karmabotdeployment.zip
-      - run: npm version | grep karmabot | sed "s/{ karmabot: '//" | sed "s/',//" > deploymentworkspace/version
+      - run: "npm version | grep karmabot | sed \"s/{ karmabot: '//\" | sed \"s/',//\" > deploymentworkspace/version"
 
       - persist_to_workspace:
           root: deploymentworkspace
