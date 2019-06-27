@@ -1,4 +1,4 @@
-# Karmabot
+# Karmabot [![CircleCI](https://circleci.com/gh/AlexanderPruss/KarmaBot.svg?style=svg)](https://circleci.com/gh/AlexanderPruss/KarmaBot)
 
 Karmabot is a slack bot that helps you keep track of how awesome things are. 
 
