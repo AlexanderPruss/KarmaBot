@@ -20,7 +20,7 @@ in a channel that Karmabot has been invited to. Karmabot will then parse your me
 increment or decrement up to five points at a time.
   - Ex: `coffee++` -> Coffee now has one more point.
   - Ex: `monday----` -> Monday now has three less points.
-- Messages containing the phrase `!leaderboard` will have Karmabot reply with the current top 5 karma holders.
+- (Not active yet) Messages containing the phrase `!leaderboard` will have Karmabot reply with the current top 5 karma holders.
 
 Feel free to suggest more features as GitHub issues.
 
